@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jonathan-portfolio",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-19",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    // Only API requests reach the Worker; every other request is served as a
+    // static file without invoking Worker code (free and unlimited).
+    "run_worker_first": ["/api/*"]
+  },
+  // Deploy to *.workers.dev only. No custom domain until launch approval (gate 8).
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": {
+    "enabled": true
+  }
+  // Phase 5 adds: Turnstile site key (public var), the rate-limit binding, and
+  // secrets TURNSTILE_SECRET_KEY / RESEND_API_KEY via `wrangler secret put`.
+  // Secrets never go in this file.
+}
