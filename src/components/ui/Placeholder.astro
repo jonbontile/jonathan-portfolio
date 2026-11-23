@@ -1,0 +1,16 @@
+---
+/**
+ * Visible marker for a missing fact. Renders the literal text
+ * "[INFORMATION NEEDED: ...]" so the production build guard (Phase 2b) can
+ * refuse to publish any page that still contains one.
+ */
+interface Props {
+  need: string;
+}
+
+const { need } = Astro.props;
+---
+
+<mark class="rounded bg-[#fff1e6] px-1.5 py-0.5 text-small font-medium text-accent-text outline-1 outline-dashed outline-accent-text">
+  [INFORMATION NEEDED: {need}]
+</mark>

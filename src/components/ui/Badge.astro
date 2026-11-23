@@ -1,0 +1,21 @@
+---
+/**
+ * Text badge for factual labels such as engagement type or status.
+ * Meaning is always carried by the words, never by color alone.
+ */
+interface Props {
+  tone?: 'neutral' | 'navy' | 'outline';
+  class?: string;
+}
+
+const { tone = 'neutral', class: className = '' } = Astro.props;
+const tones = {
+  neutral: 'bg-navy-100 text-navy-900',
+  navy: 'bg-navy-900 text-white',
+  outline: 'border border-border-strong text-ink',
+};
+---
+
+<span class={`inline-flex items-center rounded px-2.5 py-0.5 text-small font-medium ${tones[tone]} ${className}`}>
+  <slot />
+</span>

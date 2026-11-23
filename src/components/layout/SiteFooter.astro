@@ -1,0 +1,43 @@
+---
+/**
+ * Site footer on the navy surface.
+ * Contact details, social profiles and the business line are pending
+ * verification (credentials register ID-03, OT-03), so they are shown only as
+ * placeholders on preview pages.
+ */
+import { footerNav } from '../../config/navigation';
+import LedgerRule from '../ui/LedgerRule.astro';
+import Placeholder from '../ui/Placeholder.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-navy-900 text-navy-200">
+  <div class="mx-auto w-full max-w-(--container-page) px-4 py-14 sm:px-6 lg:px-8">
+    <LedgerRule tone="dark" class="mb-10" />
+    <div class="grid gap-10 md:grid-cols-[2fr_1fr]">
+      <div>
+        <p class="font-display text-xl font-bold text-white">Jonathan Bontile</p>
+        <p class="mt-3 max-w-(--container-prose) text-small">
+          <Placeholder need="verified credential and business line for the footer" />
+        </p>
+      </div>
+      <nav aria-label="Footer">
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-2" role="list">
+          {
+            footerNav.map((item) => (
+              <li>
+                <a href={item.href} class="text-small text-navy-200 hover:text-white">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+    <p class="mt-12 border-t border-navy-200/20 pt-6 text-small">
+      <span class="tabular">© {year}</span> Jonathan Bontile. Case studies are anonymized.
+    </p>
+  </div>
+</footer>
