@@ -23,10 +23,8 @@ A static Astro site served by a Cloudflare Worker with static assets. The same W
 
 ## Project documents
 
-- Root: owner documents (`CLAUDE.md`, `PROJECT_BRIEF.md`, `CLAUDE_CODE_IMPLEMENTATION_PLAN.md`, `CONTENT_STRATEGY.md`, `DESIGN_SYSTEM.md`, `VISUAL_DESIGN_BRIEF.md`, `CLAUDE_CODE_DESIGN_IMPLEMENTATION.md`) and `Claude Code Master Prompt.md`
-- `docs/session-1/`: environment audit, skill audit, design research, initial architecture, homepage wireframe
-- `docs/decisions/`: reconciliation, architecture decision record, email, security and privacy, GitHub plan, roadmap
-- `docs/registers/`: credentials and content evidence registers (references only, never evidence)
+- Repository root: the owner's planning documents (`CLAUDE.md`, `PROJECT_BRIEF.md`, `CLAUDE_CODE_IMPLEMENTATION_PLAN.md`, `CONTENT_STRATEGY.md`, `DESIGN_SYSTEM.md`, `VISUAL_DESIGN_BRIEF.md`, `CLAUDE_CODE_DESIGN_IMPLEMENTATION.md`) and `Claude Code Master Prompt.md`.
+- Decision records, audits and the evidence registers live in a **separate private repository**, checked out locally at `docs/`. This public repository ignores that folder.
 
 ## Rules
 
