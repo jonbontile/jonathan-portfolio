@@ -1,0 +1,114 @@
+---
+/**
+ * Content status for owner review. Preview-only (never in production builds).
+ * Shows each entry's status, cited claims and whether it still has placeholders,
+ * i.e. what is blocking publication.
+ */
+import { getCollection, type CollectionKey } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Badge from '../components/ui/Badge.astro';
+import LedgerRule from '../components/ui/LedgerRule.astro';
+import approvedClaims from '../data/approved-claims.json';
+
+const approved = new Set<string>(approvedClaims.approved);
+const collections: { key: CollectionKey; label: string }[] = [
+  { key: 'profile', label: 'Profile' },
+  { key: 'services', label: 'Services' },
+  { key: 'experience', label: 'Experience' },
+  { key: 'qualifications', label: 'Qualifications' },
+  { key: 'skills', label: 'Skills' },
+  { key: 'caseStudies', label: 'Case studies' },
+  { key: 'testimonials', label: 'Testimonials' },
+  { key: 'articles', label: 'Articles' },
+];
+
+const groups = await Promise.all(
+  collections.map(async ({ key, label }) => {
+    const entries = await getCollection(key);
+    return {
+      label,
+      entries: entries.map((e) => {
+        const data = e.data as { status: string; claimIds: string[] };
+        const text = JSON.stringify(e.data) + (('body' in e && e.body) || '');
+        const claims = data.claimIds.map((id) => ({ id, ok: approved.has(id) }));
+        const placeholders = (text.match(/\[INFORMATION NEEDED/g) || []).length;
+        const publishable = data.status === 'approved' && claims.every((c) => c.ok) && placeholders === 0;
+        return { id: e.id, status: data.status, claims, placeholders, publishable };
+      }),
+    };
+  }),
+);
+
+const total = groups.reduce((n, g) => n + g.entries.length, 0);
+const ready = groups.reduce((n, g) => n + g.entries.filter((e) => e.publishable).length, 0);
+---
+
+<SiteLayout title="Content status" description="Preview-only overview of what can be published.">
+  <Section tone="paper">
+    <div class="max-w-(--container-prose)">
+      <Badge tone="outline">Preview only, not published</Badge>
+      <h1 class="mt-5">Content status</h1>
+      <p class="mt-5 text-muted">
+        An entry publishes in production only when its status is approved, every claim it cites is approved in the
+        evidence registers, and it has no missing-information markers left.
+      </p>
+      <p class="tabular mt-5 font-display text-h4 text-navy-900">{ready} of {total} entries ready to publish</p>
+    </div>
+  </Section>
+
+  <Section>
+    {
+      groups.map((g) => (
+        <div class="mb-14">
+          <h2 class="text-h3">{g.label}</h2>
+          <LedgerRule class="mt-4 mb-6" />
+          {g.entries.length === 0 ? (
+            <p class="text-muted">No entries yet.</p>
+          ) : (
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[40rem] text-left text-small">
+                <thead class="border-b border-border-strong text-navy-900">
+                  <tr>
+                    <th scope="col" class="py-2 pr-4 font-semibold">Entry</th>
+                    <th scope="col" class="py-2 pr-4 font-semibold">Status</th>
+                    <th scope="col" class="py-2 pr-4 font-semibold">Claims</th>
+                    <th scope="col" class="py-2 pr-4 font-semibold">Missing information</th>
+                    <th scope="col" class="py-2 font-semibold">Publishable</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {g.entries.map((e) => (
+                    <tr class="border-b border-line align-top">
+                      <th scope="row" class="py-3 pr-4 font-medium text-ink">{e.id}</th>
+                      <td class="py-3 pr-4">
+                        <Badge tone={e.status === 'approved' ? 'navy' : 'outline'}>{e.status === 'approved' ? 'Approved' : 'Draft'}</Badge>
+                      </td>
+                      <td class="py-3 pr-4">
+                        {e.claims.length === 0 ? (
+                          <span class="text-muted">None cited</span>
+                        ) : (
+                          <ul class="flex flex-wrap gap-1.5" role="list">
+                            {e.claims.map((c) => (
+                              <li class="tabular">
+                                <span class={c.ok ? 'text-success' : 'text-error'}>
+                                  {c.id} {c.ok ? '(approved)' : '(not approved)'}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </td>
+                      <td class="tabular py-3 pr-4">{e.placeholders === 0 ? 'None' : `${e.placeholders} marker${e.placeholders === 1 ? '' : 's'}`}</td>
+                      <td class="py-3 font-medium">{e.publishable ? 'Yes' : 'No'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </Section>
+</SiteLayout>

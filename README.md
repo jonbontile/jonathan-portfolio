@@ -29,6 +29,16 @@ Cloudflare Workers Builds is connected to this repository.
 | `npm run check` | Type-check the Astro site and the Worker |
 | `npm run deploy` | Build and deploy with Wrangler. **Production deploys need approval.** Normally Workers Builds deploys from `main` |
 
+## Content and publishing
+
+Content lives in Markdown under `src/content/` (profile, services, experience, qualifications, skills, case studies, testimonials, articles). The typed schemas are in `src/content.config.ts`.
+
+- Every entry has `status: draft | approved` and `claimIds`. Each claim ID refers to a row in the private evidence registers.
+- `src/data/approved-claims.json` lists the claim IDs approved for publication. It holds IDs only, never evidence.
+- **Production builds** (`main` on Cloudflare, or `PRODUCTION_BUILD=1`) publish approved entries only. They **fail** if approved content cites an unapproved claim, if a required field is missing, or if any page still contains `[INFORMATION NEEDED`.
+- **Local and preview builds** include drafts. Review pages: `/content-status/` (what's blocking publication) and `/design-system/`.
+- Copy `src/content/case-studies/_TEMPLATE.md` to start a case study. Files starting with `_` are never built.
+
 ## Project documents
 
 - Repository root: the owner's planning documents (`CLAUDE.md`, `PROJECT_BRIEF.md`, `CLAUDE_CODE_IMPLEMENTATION_PLAN.md`, `CONTENT_STRATEGY.md`, `DESIGN_SYSTEM.md`, `VISUAL_DESIGN_BRIEF.md`, `CLAUDE_CODE_DESIGN_IMPLEMENTATION.md`) and `Claude Code Master Prompt.md`.
