@@ -1,0 +1,40 @@
+---
+/**
+ * Homepage prototype for approval gate 5. Preview-only (see astro.config.mjs).
+ * Built from the same components the real homepage will use once its content
+ * is approved. Content comes through getPublished(), so in preview builds
+ * drafts appear (labeled), and in production only approved entries would.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import Overview from '../components/home/Overview.astro';
+import AudiencePaths from '../components/home/AudiencePaths.astro';
+import Philosophy from '../components/home/Philosophy.astro';
+import FeaturedCases from '../components/home/FeaturedCases.astro';
+import Credentials from '../components/home/Credentials.astro';
+import TimelinePreview from '../components/home/TimelinePreview.astro';
+import ContactCta from '../components/home/ContactCta.astro';
+import { getPublished } from '../lib/content';
+
+const [profiles, experience, qualifications, cases] = await Promise.all([
+  getPublished('profile'),
+  getPublished('experience'),
+  getPublished('qualifications'),
+  getPublished('caseStudies'),
+]);
+
+const profile = profiles[0];
+const business = experience.find((e) => e.data.engagementType === 'business-ownership');
+const license = qualifications.find((q) => q.data.kind === 'license');
+---
+
+<SiteLayout title="Homepage prototype" description="Preview-only homepage prototype for approval gate 5.">
+  <Hero profile={profile} />
+  <Overview profile={profile} business={business} license={license} />
+  <AudiencePaths profile={profile} />
+  <Philosophy />
+  <FeaturedCases cases={cases} />
+  <Credentials qualifications={qualifications} />
+  <TimelinePreview experience={experience} />
+  <ContactCta profile={profile} />
+</SiteLayout>

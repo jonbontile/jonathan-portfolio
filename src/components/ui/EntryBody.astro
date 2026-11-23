@@ -1,0 +1,22 @@
+---
+/**
+ * Renders a content entry's Markdown body.
+ * While a body still contains "[INFORMATION NEEDED" markers (drafts, previews
+ * only: production refuses them), it's shown as plain paragraphs with the
+ * markers highlighted. A finished body renders as normal Markdown.
+ */
+import { render, type CollectionEntry, type CollectionKey } from 'astro:content';
+import Fact from './Fact.astro';
+
+interface Props {
+  entry: CollectionEntry<CollectionKey>;
+}
+
+const { entry } = Astro.props;
+const raw = (entry.body ?? '').trim();
+const hasMarkers = raw.includes('[INFORMATION NEEDED');
+const Content = hasMarkers ? undefined : (await render(entry)).Content;
+const paragraphs = hasMarkers ? raw.split(/\n\s*\n/).map((p) => p.replace(/^#+\s*/, '').trim()) : [];
+---
+
+{Content ? <Content /> : paragraphs.map((p, i) => <p class={i > 0 ? 'mt-3' : ''}><Fact value={p} /></p>)}

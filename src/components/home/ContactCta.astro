@@ -1,0 +1,37 @@
+---
+/**
+ * Closing contact section on navy. Copy is draft for owner approval.
+ */
+import type { CollectionEntry } from 'astro:content';
+import Section from '../ui/Section.astro';
+import Button from '../ui/Button.astro';
+import Placeholder from '../ui/Placeholder.astro';
+
+interface Props {
+  profile?: CollectionEntry<'profile'>;
+}
+
+const resume = Astro.props.profile?.data.resumePdf;
+---
+
+<Section tone="navy" labelledby="contact-title">
+  <div class="max-w-(--container-prose)">
+    <h2 id="contact-title">Let's talk about your books, your reporting or your team.</h2>
+    <p class="mt-5 text-navy-200">
+      Tell me what you need, whether it's ongoing bookkeeping, a reporting question or a role you're hiring for.
+    </p>
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <Button href="/contact/">Discuss a project</Button>
+      {
+        resume ? (
+          <Button href={resume} variant="inverse" download>
+            Download resume (PDF)
+          </Button>
+        ) : null
+      }
+    </div>
+    <p class="mt-6 text-small text-navy-200">
+      Prefer email? <Placeholder need="public contact email (OT-03)" />
+    </p>
+  </div>
+</Section>

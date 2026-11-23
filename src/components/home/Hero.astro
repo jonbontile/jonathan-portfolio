@@ -1,0 +1,115 @@
+---
+/**
+ * Split-screen hero.
+ * Desktop: introduction and CTAs on the left, headshot panel on navy at right.
+ * Mobile: introduction and primary CTA FIRST, photo second (VISUAL_DESIGN_BRIEF.md).
+ * DOM order matches the visual order at every width.
+ *
+ * The page's single orchestrated motion: a short staggered entrance, run once,
+ * and only when the visitor hasn't asked for reduced motion.
+ */
+import type { CollectionEntry } from 'astro:content';
+import Button from '../ui/Button.astro';
+import Badge from '../ui/Badge.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import Fact from '../ui/Fact.astro';
+import { isDraft } from '../../lib/content';
+
+interface Props {
+  profile?: CollectionEntry<'profile'>;
+}
+
+const { profile } = Astro.props;
+const p = profile?.data;
+const displayName = p ? `${p.name}${p.credential ? `, ${p.credential}` : ''}` : undefined;
+---
+
+<section aria-labelledby="hero-title" class="relative overflow-hidden bg-white">
+  <div class="grid lg:min-h-[min(88svh,52rem)] lg:grid-cols-2">
+    <!-- Introduction -->
+    <div
+      class="hero-intro flex flex-col justify-center px-4 py-14 sm:px-6 sm:py-16 lg:py-20 lg:pr-14 lg:pl-[max(2rem,calc((100vw-var(--container-page))/2+2rem))]"
+    >
+      {profile && isDraft(profile) && <Badge tone="outline" class="mb-6 self-start">Draft content</Badge>}
+      <p class="hero-item font-display text-small font-semibold text-accent-text" style="--i:0">Beyond the Numbers</p>
+      <h1 id="hero-title" class="hero-item mt-4" style="--i:1">
+        {displayName ?? <Placeholder need="name and credential" />}
+      </h1>
+      <p class="hero-item mt-4 font-display text-h4 font-semibold text-navy-900" style="--i:2">
+        {p?.headline ?? <Placeholder need="headline" />}
+      </p>
+      <p class="hero-item mt-5 max-w-[34rem] text-muted" style="--i:3">
+        {p?.summary ?? <Placeholder need="supporting statement" />}
+      </p>
+      <div class="hero-item mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap" style="--i:4">
+        <Button href="/contact/">Discuss a project</Button>
+        <Button href="/experience/" variant="secondary">Explore my experience</Button>
+      </div>
+      <p class="hero-item mt-5 text-small" style="--i:5">
+        {
+          p?.portfolioPdf ? (
+            <a href={p.portfolioPdf} download>Download my portfolio (PDF)</a>
+          ) : (
+            <Placeholder need="portfolio PDF for the download link" />
+          )
+        }
+      </p>
+    </div>
+
+    <!-- Photo panel -->
+    <div class="hero-photo relative flex items-center justify-center bg-navy-900 px-4 py-14 sm:px-6 lg:py-20">
+      <div class="w-full max-w-[22rem] lg:max-w-[26rem]">
+        <div
+          class="relative flex aspect-[4/5] flex-col items-center justify-center gap-3 rounded-lg border border-navy-200/25 bg-navy-800 text-center"
+          role="img"
+          aria-label="Placeholder for Jonathan Bontile's professional headshot"
+        >
+          <span class="font-display text-[4.5rem] leading-none font-extrabold text-white/90" aria-hidden="true">JB</span>
+          <span class="text-small text-navy-200" aria-hidden="true">Photo coming soon</span>
+        </div>
+        <div class="mt-5 flex items-center" aria-hidden="true">
+          <span class="h-[3px] w-10 shrink-0 rounded-full bg-accent"></span>
+          <span class="h-px flex-1 bg-navy-200/40"></span>
+        </div>
+        <p class="mt-4 text-small text-navy-200">
+          <Placeholder need="genuine professional headshot (AS-01)" />
+        </p>
+        <p class="mt-3 text-small text-navy-200">
+          {p?.location ? <Fact value={p.location} /> : <Placeholder need="location / time zone line" />}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-item {
+      animation: hero-rise 480ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      animation-delay: calc(var(--i, 0) * 70ms);
+    }
+    .hero-photo > div {
+      animation: hero-fade 700ms ease-out 200ms both;
+    }
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes hero-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>
