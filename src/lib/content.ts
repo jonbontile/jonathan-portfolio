@@ -38,6 +38,18 @@ export async function getPublished<C extends CollectionKey>(collection: C): Prom
 
 export const isDraft = (entry: { data: { status: string } }) => entry.data.status !== 'approved';
 
+/** Most recent first: ongoing entries, then by start date (undated drafts last). */
+export function sortExperience<T extends { data: { start?: string; ongoing: boolean } }>(entries: T[]): T[] {
+  return [...entries].sort(
+    (a, b) => Number(b.data.ongoing) - Number(a.data.ongoing) || (b.data.start ?? '').localeCompare(a.data.start ?? ''),
+  );
+}
+
+/** Sort by the `order` field, then title/name. */
+export function byOrder<T extends { data: { order: number } }>(entries: T[]): T[] {
+  return [...entries].sort((a, b) => a.data.order - b.data.order);
+}
+
 const ALL_COLLECTIONS: CollectionKey[] = [
   'profile',
   'services',

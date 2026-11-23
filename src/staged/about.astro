@@ -1,0 +1,95 @@
+---
+/**
+ * About: background, working method, skills and tools.
+ * Staged page (preview-only) until its content is approved.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/common/PageHeader.astro';
+import Section from '../components/ui/Section.astro';
+import Card from '../components/ui/Card.astro';
+import Button from '../components/ui/Button.astro';
+import Badge from '../components/ui/Badge.astro';
+import Placeholder from '../components/ui/Placeholder.astro';
+import EntryBody from '../components/ui/EntryBody.astro';
+import Philosophy from '../components/home/Philosophy.astro';
+import { getPublished, isDraft, byOrder } from '../lib/content';
+
+const [profile] = await getPublished('profile');
+const skills = byOrder(await getPublished('skills'));
+---
+
+<SiteLayout title="About" description="Background, working method, skills and tools.">
+  <PageHeader title="About" draft={!profile || isDraft(profile)} />
+
+  <Section tone="white" labelledby="background-title">
+    <div class="grid gap-12 lg:grid-cols-[7fr_5fr] lg:gap-16">
+      <div class="max-w-(--container-prose)">
+        <h2 id="background-title">Background</h2>
+        <div class="mt-6 text-lg">
+          {profile ? <EntryBody entry={profile} /> : <Placeholder need="professional background" />}
+        </div>
+        <p class="mt-6">
+          <Placeholder need="career story: how Jonathan came to accounting and to founding Bontile Bookkeeping Services" />
+        </p>
+      </div>
+      <aside aria-label="At a glance" class="self-start rounded-lg border border-line bg-paper p-6 sm:p-8">
+        <h2 class="text-h4">At a glance</h2>
+        <dl class="mt-5 space-y-4 text-small">
+          <div>
+            <dt class="font-semibold text-navy-900">Based in</dt>
+            <dd class="mt-1"><Placeholder need="location / time zone (ID-05)" /></dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-navy-900">Languages</dt>
+            <dd class="mt-1">
+              {profile?.data.languages.length ? profile.data.languages.join(', ') : <Placeholder need="languages (OT-02)" />}
+            </dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-navy-900">Availability</dt>
+            <dd class="mt-1"><Placeholder need="availability (OT-03)" /></dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </Section>
+
+  <Philosophy />
+
+  <Section tone="white" id="skills" labelledby="skills-title">
+    <h2 id="skills-title">Skills and tools</h2>
+    <p class="mt-4 max-w-(--container-prose) text-muted">
+      Tools are listed only where there's evidence of their use, such as a certification or a case study.
+    </p>
+    {
+      skills.length === 0 ? (
+        <p class="mt-8">
+          <Placeholder need="skill groups and tools, each with evidence (credentials register SK-01)" />
+        </p>
+      ) : (
+        <ul class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3" role="list">
+          {skills.map((group) => (
+            <Card as="li">
+              {isDraft(group) && <Badge tone="outline">Draft</Badge>}
+              <h3 class="mt-3 text-h4">{group.data.category}</h3>
+              <ul class="mt-4 space-y-2 text-small" role="list">
+                {group.data.items.map((item) => (
+                  <li>
+                    {item.evidence ? <a href={item.evidence}>{item.name}</a> : item.name}
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          ))}
+        </ul>
+      )
+    }
+  </Section>
+
+  <Section tone="paper">
+    <div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <h2 class="text-h3">Want to work together?</h2>
+      <Button href="/contact/">Discuss a project</Button>
+    </div>
+  </Section>
+</SiteLayout>

@@ -4,6 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { readdir, readFile } from 'node:fs/promises';
+import { readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isStrictBuild, includePreviewPages, buildModeLabel } from './src/lib/build-mode.mjs';
@@ -13,7 +14,29 @@ import { isStrictBuild, includePreviewPages, buildModeLabel } from './src/lib/bu
 // Until then SITE_URL is unset, so no canonical URLs or sitemap are generated.
 const site = process.env.SITE_URL || undefined;
 
-/** Preview-only review pages. Never part of a strict (production) build. */
+/**
+ * Staged pages: real site pages whose content isn't approved yet. Each .astro
+ * file in src/staged/ is injected at the URL its path implies (about.astro ->
+ * /about, case-studies/[slug].astro -> /case-studies/[slug]) in PREVIEW builds
+ * only. To publish a page once its content is approved, move it to src/pages/.
+ */
+function stagedRoutes(dir = 'src/staged', prefix = '') {
+  /** @type {{ pattern: string, entrypoint: string }[]} */
+  const routes = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith('_')) continue;
+    const path = `${dir}/${entry.name}`;
+    if (entry.isDirectory()) {
+      routes.push(...stagedRoutes(path, `${prefix}/${entry.name}`));
+    } else if (entry.name.endsWith('.astro')) {
+      const name = entry.name.replace(/\.astro$/, '');
+      routes.push({ pattern: name === 'index' ? prefix || '/' : `${prefix}/${name}`, entrypoint: `./${path}` });
+    }
+  }
+  return routes;
+}
+
+/** Preview-only review and staged pages. Never part of a strict (production) build. */
 /** @type {import('astro').AstroIntegration} */
 const previewPages = {
   name: 'preview-pages',
@@ -24,6 +47,7 @@ const previewPages = {
         injectRoute({ pattern: '/design-system', entrypoint: './src/review/design-system.astro' });
         injectRoute({ pattern: '/content-status', entrypoint: './src/review/content-status.astro' });
         injectRoute({ pattern: '/prototype', entrypoint: './src/review/homepage-prototype.astro' });
+        for (const route of stagedRoutes()) injectRoute(route);
       }
     },
   },

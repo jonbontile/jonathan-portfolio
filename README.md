@@ -39,6 +39,10 @@ Content lives in Markdown under `src/content/` (profile, services, experience, q
 - **Local and preview builds** include drafts. Review pages: `/content-status/` (what's blocking publication) and `/design-system/`.
 - Copy `src/content/case-studies/_TEMPLATE.md` to start a case study. Files starting with `_` are never built.
 
+### Staged pages
+
+Site pages whose content isn't approved yet live in `src/staged/`. They are built at their real URLs (`/about/`, `/case-studies/[slug]/` and so on) in **preview builds only**. To publish a page once its content is approved, move it into `src/pages/`. The production guard still refuses it if anything is missing. The homepage prototype is at `/prototype/` on previews.
+
 ## Project documents
 
 - Repository root: the owner's planning documents (`CLAUDE.md`, `PROJECT_BRIEF.md`, `CLAUDE_CODE_IMPLEMENTATION_PLAN.md`, `CONTENT_STRATEGY.md`, `DESIGN_SYSTEM.md`, `VISUAL_DESIGN_BRIEF.md`, `CLAUDE_CODE_DESIGN_IMPLEMENTATION.md`) and `Claude Code Master Prompt.md`.
