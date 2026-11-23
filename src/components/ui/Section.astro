@@ -1,0 +1,25 @@
+---
+/**
+ * Page section with a tone and a centered container.
+ * Vertical rhythm comes from the --spacing-section token.
+ */
+interface Props {
+  tone?: 'white' | 'paper' | 'navy';
+  id?: string;
+  labelledby?: string;
+  class?: string;
+}
+
+const { tone = 'white', id, labelledby, class: className = '' } = Astro.props;
+const tones = {
+  white: 'bg-white',
+  paper: 'bg-paper',
+  navy: 'bg-navy-900 text-white [&_h2]:text-white [&_h3]:text-white [&_a]:text-white',
+};
+---
+
+<section id={id} aria-labelledby={labelledby} class={`py-(--spacing-section) ${tones[tone]} ${className}`}>
+  <div class="mx-auto w-full max-w-(--container-page) px-4 sm:px-6 lg:px-8">
+    <slot />
+  </div>
+</section>

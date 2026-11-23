@@ -1,0 +1,263 @@
+---
+/**
+ * Design token and component review page for approval gate 3.
+ * Injected by astro.config.mjs only for local and preview builds.
+ * It never reaches production.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Badge from '../components/ui/Badge.astro';
+import Card from '../components/ui/Card.astro';
+import LedgerRule from '../components/ui/LedgerRule.astro';
+import Placeholder from '../components/ui/Placeholder.astro';
+
+interface Swatch {
+  name: string;
+  hex: string;
+  use: string;
+  contrast: string;
+  dark?: boolean;
+  border?: boolean;
+}
+
+const brand: Swatch[] = [
+  { name: 'navy-900', hex: '#0B1F3A', use: 'Headings, navy surfaces, footer', contrast: 'White on it 16.52:1', dark: true },
+  { name: 'navy-800', hex: '#142C4F', use: 'Hover on navy surfaces', contrast: 'White on it 14.2:1', dark: true },
+  { name: 'navy-700', hex: '#1E4E8C', use: 'Links', contrast: '8.32:1 on white', dark: true },
+  { name: 'navy-200', hex: '#C9D4E4', use: 'Secondary text on navy', contrast: '11.03:1 on navy-900' },
+  { name: 'navy-100', hex: '#E8EEF6', use: 'Badges, quiet tints', contrast: 'Navy text on it 14.15:1' },
+];
+
+const neutrals: Swatch[] = [
+  { name: 'white', hex: '#FFFFFF', use: 'Main background', contrast: '—', border: true },
+  { name: 'paper', hex: '#F5F7FA', use: 'Alternating sections', contrast: '—', border: true },
+  { name: 'ink', hex: '#1A2B45', use: 'Body text', contrast: '14.23:1 on white', dark: true },
+  { name: 'muted', hex: '#4A5872', use: 'Secondary text', contrast: '7.17:1 on white', dark: true },
+  { name: 'line', hex: '#D5DCE6', use: 'Dividers, card borders (decorative)', contrast: 'Decorative only' },
+  { name: 'border-strong', hex: '#7A879C', use: 'Form field borders', contrast: '3.64:1 on white', dark: true },
+];
+
+const semantic: Swatch[] = [
+  { name: 'success', hex: '#1E6B45', use: 'Form success messages', contrast: '6.47:1 on white', dark: true },
+  { name: 'warning', hex: '#8A5300', use: 'Warnings', contrast: '6.33:1 on white', dark: true },
+  { name: 'error', hex: '#B3261E', use: 'Form errors', contrast: '6.54:1 on white', dark: true },
+];
+
+const engagementTypes = ['Employment', 'Freelance', 'Business ownership', 'Independent project'];
+const stages = [
+  { name: 'Understand', note: 'Learn the business, its processes and its records.' },
+  { name: 'Reconcile', note: 'Make the records agree with source evidence.' },
+  { name: 'Analyze', note: 'Turn accurate records into insight about performance.' },
+  { name: 'Improve', note: 'Recommend and implement better processes and controls.' },
+];
+---
+
+<SiteLayout title="Design tokens for review" description="Preview-only review page for approval gate 3.">
+  <Section tone="paper">
+    <div class="max-w-(--container-prose)">
+      <Badge tone="outline">Preview only, not published</Badge>
+      <h1 class="mt-5">Design tokens for review</h1>
+      <p class="mt-5 text-muted">
+        This page shows every color, type style and base component proposed for approval gate 3. It exists only on
+        preview builds. Approve, or note changes, section by section.
+      </p>
+    </div>
+  </Section>
+
+  <Section>
+    <div role="note" class="rounded-lg border-2 border-accent-text bg-[#fff1e6] p-6 sm:p-8">
+      <h2 class="text-h3">The orange is a placeholder</h2>
+      <p class="mt-3 max-w-(--container-prose)">
+        The official Bontile orange hasn't been confirmed. The swatches below use <code class="font-semibold">#FF4400</code>,
+        sampled from the Bontile logo, as the only sourced candidate. Once you supply the official value, it replaces this
+        token everywhere, and every accent pairing is rechecked.
+      </p>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <div class="flex items-center gap-4">
+          <span class="size-14 shrink-0 rounded-md bg-accent" aria-hidden="true"></span>
+          <div class="text-small">
+            <p class="font-semibold text-navy-900">accent-unconfirmed · #FF4400</p>
+            <p class="text-muted">Buttons, focus ring, ledger tick. 3.45:1 on white (non-text only)</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="size-14 shrink-0 rounded-md bg-accent-text" aria-hidden="true"></span>
+          <div class="text-small">
+            <p class="font-semibold text-navy-900">accent-unconfirmed-strong · #C73500</p>
+            <p class="text-muted">Orange text on light surfaces. 5.33:1 on white</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section tone="white" labelledby="colors">
+    <h2 id="colors">Color</h2>
+    <LedgerRule class="mt-6 mb-10" />
+    {
+      [
+        { title: 'Navy', items: brand },
+        { title: 'Neutrals', items: neutrals },
+        { title: 'Status', items: semantic },
+      ].map((group) => (
+        <div class="mb-12">
+          <h3 class="text-h4">{group.title}</h3>
+          <ul class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+            {group.items.map((s) => (
+              <li class="overflow-hidden rounded-lg border border-line">
+                <div
+                  class={`flex h-20 items-end p-3 font-display text-small font-semibold ${s.dark ? 'text-white' : 'text-navy-900'} ${s.border ? 'border-b border-line' : ''}`}
+                  style={`background:${s.hex}`}
+                >
+                  Aa
+                </div>
+                <div class="p-4 text-small">
+                  <p class="font-semibold text-navy-900">
+                    {s.name} <span class="tabular font-normal text-muted">{s.hex}</span>
+                  </p>
+                  <p class="mt-1 text-muted">{s.use}</p>
+                  <p class="mt-1 text-muted">{s.contrast}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </Section>
+
+  <Section tone="paper" labelledby="type">
+    <h2 id="type">Typography</h2>
+    <LedgerRule class="mt-6 mb-10" />
+    <div class="grid gap-12 lg:grid-cols-[1fr_2fr]">
+      <div class="text-small text-muted">
+        <p><strong class="text-navy-900">Manrope</strong> for headings: weights 700 and 800, tight tracking.</p>
+        <p class="mt-3"><strong class="text-navy-900">Inter</strong> for body text and interface: 18 px, 1.65 line height.</p>
+        <p class="mt-3">Both are SIL Open Font License, self-hosted. No requests to font services.</p>
+        <p class="mt-3">Scale ratio 1.25. Headings shrink fluidly on small screens.</p>
+      </div>
+      <div class="space-y-8">
+        <div>
+          <p class="text-small text-muted">Heading 1 · 38–56 px</p>
+          <p class="mt-1 font-display text-h1 font-extrabold tracking-tight text-navy-900">Beyond the Numbers</p>
+        </div>
+        <div>
+          <p class="text-small text-muted">Heading 2 · 30–40 px</p>
+          <p class="mt-1 font-display text-h2 font-bold tracking-tight text-navy-900">Understand, reconcile, analyze, improve</p>
+        </div>
+        <div>
+          <p class="text-small text-muted">Heading 3 · 24–28 px</p>
+          <p class="mt-1 font-display text-h3 font-bold text-navy-900">For clients and for employers</p>
+        </div>
+        <div>
+          <p class="text-small text-muted">Heading 4 · 22 px</p>
+          <p class="mt-1 font-display text-h4 font-bold text-navy-900">Reconciling the books</p>
+        </div>
+        <div class="max-w-(--container-prose)">
+          <p class="text-small text-muted">Body · 18 px</p>
+          <p class="mt-1">
+            Reliable books and useful reporting support better decisions. This paragraph shows the body size, line height and
+            a comfortable reading width of about 70 characters, with a <a href="#type">sample link</a> that stays underlined so
+            it's identifiable without color.
+          </p>
+        </div>
+        <div>
+          <p class="text-small text-muted">Tabular figures for dates and amounts</p>
+          <p class="tabular mt-1 text-h4 text-navy-900">2019 – 2024 · 1,240.50 · 98,107.00</p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section tone="white" labelledby="motif">
+    <h2 id="motif">The ledger rule</h2>
+    <p class="mt-4 max-w-(--container-prose) text-muted">
+      The one signature element: a thin rule closed by a short orange tick, like a reconciliation mark on a working paper.
+      It opens sections, and it joins steps only where the content really is a sequence, like the four-stage method below.
+    </p>
+    <ol class="mt-10 grid gap-8 md:grid-cols-4" role="list">
+      {
+        stages.map((s, i) => (
+          <li>
+            <LedgerRule />
+            <p class="tabular mt-4 font-display text-small font-bold text-accent-text">Step {i + 1}</p>
+            <h3 class="mt-1 text-h4">{s.name}</h3>
+            <p class="mt-2 text-small text-muted">{s.note}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="mt-6 text-small text-muted">Stage descriptions are drafts (evidence register PS-04), not approved copy.</p>
+  </Section>
+
+  <Section tone="paper" labelledby="components">
+    <h2 id="components">Components</h2>
+    <LedgerRule class="mt-6 mb-10" />
+
+    <h3 class="text-h4">Buttons</h3>
+    <p class="mt-2 text-small text-muted">Press Tab to see the focus ring: 3 px orange with a 2 px gap.</p>
+    <div class="mt-5 flex flex-wrap gap-4">
+      <Button href="#components">Discuss a project</Button>
+      <Button href="#components" variant="secondary">Explore my experience</Button>
+      <Button variant="primary" disabled>Disabled</Button>
+    </div>
+    <div class="mt-6 rounded-lg bg-navy-900 p-6">
+      <p class="text-small text-navy-200">On navy</p>
+      <div class="mt-3 flex flex-wrap gap-4">
+        <Button href="#components">Discuss a project</Button>
+        <Button href="#components" variant="inverse">Download resume</Button>
+      </div>
+    </div>
+
+    <h3 class="mt-14 text-h4">Engagement badges</h3>
+    <p class="mt-2 text-small text-muted">Every experience entry and case study carries exactly one of these.</p>
+    <div class="mt-5 flex flex-wrap gap-3">
+      {engagementTypes.map((t) => <Badge>{t}</Badge>)}
+      <Badge tone="navy">Ongoing</Badge>
+      <Badge tone="outline">Completed</Badge>
+    </div>
+
+    <h3 class="mt-14 text-h4">Cards</h3>
+    <div class="mt-5 grid gap-6 md:grid-cols-2">
+      <Card as="article" interactive>
+        <Badge>Freelance</Badge>
+        <h4 class="mt-4">
+          <a href="#components" class="text-navy-900 no-underline after:absolute after:inset-0 hover:underline">
+            Example case study card
+          </a>
+        </h4>
+        <p class="mt-2 text-small text-muted">The whole card is clickable through one link. Hover or focus raises it slightly.</p>
+      </Card>
+      <Card>
+        <h4>Static card</h4>
+        <p class="mt-2 text-small text-muted">For credentials and facts: flat border, no shadow, no hover.</p>
+      </Card>
+    </div>
+
+    <h3 class="mt-14 text-h4">Form field</h3>
+    <div class="mt-5 grid max-w-xl gap-6">
+      <div>
+        <label for="demo-name" class="block font-medium text-navy-900">Name</label>
+        <input id="demo-name" type="text" autocomplete="off" class="mt-2 block w-full rounded-md border border-border-strong bg-white px-4 py-3 text-ink" />
+      </div>
+      <div>
+        <label for="demo-email" class="block font-medium text-navy-900">Email</label>
+        <input
+          id="demo-email"
+          type="email"
+          aria-invalid="true"
+          aria-describedby="demo-email-error"
+          value="name@"
+          autocomplete="off"
+          class="mt-2 block w-full rounded-md border-2 border-error bg-white px-4 py-3 text-ink"
+        />
+        <p id="demo-email-error" class="mt-2 text-small font-medium text-error">Enter an email address in the format name@example.com.</p>
+      </div>
+    </div>
+
+    <h3 class="mt-14 text-h4">Missing information</h3>
+    <p class="mt-2 text-small text-muted">How an unverified fact looks in previews. Production builds will refuse to publish any page containing one.</p>
+    <p class="mt-4"><Placeholder need="year licensed as CPA" /></p>
+  </Section>
+</SiteLayout>

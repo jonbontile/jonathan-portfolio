@@ -1,0 +1,102 @@
+---
+/**
+ * Site header.
+ * Desktop: name, primary navigation, persistent "Discuss a project" CTA.
+ * Mobile: name and a menu button (disclosure pattern). Without JavaScript the
+ * links stay visible as a stacked list, so navigation never depends on a script.
+ */
+import Button from '../ui/Button.astro';
+import { primaryNav, primaryCta } from '../../config/navigation';
+
+const current = Astro.url.pathname;
+const isCurrent = (href: string) => current === href || (href !== '/' && current.startsWith(href));
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+  <div class="mx-auto flex w-full max-w-(--container-page) flex-wrap items-center justify-between gap-x-6 px-4 py-3 sm:px-6 lg:px-8">
+    <a href="/" class="font-display text-lg font-bold text-navy-900 no-underline hover:no-underline">
+      Jonathan Bontile
+    </a>
+
+    <button
+      type="button"
+      class="menu-toggle hidden min-h-11 min-w-11 items-center justify-center gap-2 rounded-md border border-border-strong px-3 font-medium text-navy-900 lg:hidden"
+      aria-expanded="false"
+      aria-controls="site-nav"
+    >
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path class="icon-open" d="M3 6h14M3 10h14M3 14h14"></path>
+        <path class="icon-close hidden" d="M5 5l10 10M15 5L5 15"></path>
+      </svg>
+      <span class="menu-label">Menu</span>
+    </button>
+
+    <nav id="site-nav" aria-label="Main" class="site-nav w-full lg:flex lg:w-auto lg:items-center lg:gap-8">
+      <ul class="flex flex-col py-2 lg:flex-row lg:items-center lg:gap-7 lg:py-0" role="list">
+        {
+          primaryNav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+                class="block py-3 font-medium text-ink no-underline decoration-accent decoration-2 underline-offset-8 hover:underline aria-[current=page]:underline lg:py-2"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="pb-4 lg:pb-0">
+        <Button href={primaryCta.href} variant="primary" class="w-full lg:w-auto">{primaryCta.label}</Button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  /* With JavaScript, collapse the mobile menu behind the toggle. */
+  @media (max-width: 63.99rem) {
+    :global(html.js) .menu-toggle {
+      display: inline-flex;
+    }
+    :global(html.js) .site-nav:not(.is-open) {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.getElementById('site-nav');
+
+  if (toggle && nav) {
+    const label = toggle.querySelector('.menu-label');
+    const iconOpen = toggle.querySelector('.icon-open');
+    const iconClose = toggle.querySelector('.icon-close');
+
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      if (label) label.textContent = open ? 'Close' : 'Menu';
+      iconOpen?.classList.toggle('hidden', open);
+      iconClose?.classList.toggle('hidden', !open);
+    };
+
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    // Close the mobile menu when the viewport grows to desktop width.
+    window.matchMedia('(min-width: 64rem)').addEventListener('change', (e) => {
+      if (e.matches) setOpen(false);
+    });
+  }
+</script>

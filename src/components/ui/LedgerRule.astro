@@ -1,0 +1,19 @@
+---
+/**
+ * The signature motif: a thin navy rule closed by a short accent tick,
+ * like a reconciliation mark on a working paper. Decorative only.
+ * Use it to open a section or to join steps that really are a sequence.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { tone = 'light', class: className = '' } = Astro.props;
+const line = tone === 'dark' ? 'bg-navy-200/40' : 'bg-navy-900/15';
+---
+
+<div class={`flex items-center ${className}`} aria-hidden="true">
+  <span class="h-[3px] w-10 shrink-0 rounded-full bg-accent"></span>
+  <span class={`h-px flex-1 ${line}`}></span>
+</div>
