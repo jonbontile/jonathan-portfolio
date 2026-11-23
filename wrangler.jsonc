@@ -14,6 +14,9 @@
   // Deploy to *.workers.dev only. No custom domain until launch approval (gate 8).
   "workers_dev": true,
   "preview_urls": true,
+  // Required by `wrangler preview`, which Workers Builds runs for
+  // non-production branches. Without it the preview deploy step fails.
+  "previews": {},
   "observability": {
     "enabled": true
   }
