@@ -3,13 +3,10 @@
  *
  * Static pages in ./dist are served directly by Workers static assets. Because
  * `run_worker_first` is limited to `/api/*`, this code runs only for API requests.
- *
- * Phase 1: the contact endpoint is a stub that reports it is not yet available.
- * Phase 5 implements validation, rate limiting, Turnstile and Resend delivery
- * (docs/decisions/SECURITY_AND_PRIVACY.md).
  */
+import { handleContact, type ContactEnv } from './contact';
 
-export interface Env {
+export interface Env extends ContactEnv {
   ASSETS: Fetcher;
 }
 
@@ -31,7 +28,7 @@ export default {
       if (request.method !== 'POST') {
         return json({ ok: false, error: 'method_not_allowed' }, 405, { allow: 'POST' });
       }
-      return json({ ok: false, error: 'not_available_yet' }, 503);
+      return handleContact(request, env);
     }
 
     if (url.pathname.startsWith('/api/')) {

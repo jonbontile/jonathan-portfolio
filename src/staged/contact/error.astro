@@ -1,0 +1,40 @@
+---
+/**
+ * Result page for form posts without JavaScript (Worker redirects here on
+ * failure, with ?reason=...). The spam check needs JavaScript, so this page
+ * also explains that and offers the email alternative.
+ */
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Section from '../../components/ui/Section.astro';
+import Button from '../../components/ui/Button.astro';
+import LedgerRule from '../../components/ui/LedgerRule.astro';
+import Placeholder from '../../components/ui/Placeholder.astro';
+---
+
+<SiteLayout title="Message not sent" description="Your message could not be sent.">
+  <Section tone="paper">
+    <div class="max-w-(--container-prose)">
+      <h1>Message not sent</h1>
+      <LedgerRule class="mt-6" />
+      <p class="reason mt-6 text-lg">Your message couldn't be sent.</p>
+      <p class="mt-4 text-muted">
+        The form needs JavaScript for its spam check. If JavaScript is off, email instead:
+        <Placeholder need="public contact email (OT-03)" />
+      </p>
+      <div class="mt-8"><Button href="/contact/" variant="secondary">Back to the form</Button></div>
+    </div>
+  </Section>
+</SiteLayout>
+
+<script>
+  const messages: Record<string, string> = {
+    invalid: 'Some fields were missing or too long. Go back to the form and check them.',
+    verification_failed: "The spam check didn't pass, so your message wasn't sent.",
+    rate_limited: 'Too many messages in a short time. Wait a minute, then try again.',
+    not_available_yet: "The form isn't connected yet, so your message wasn't sent.",
+    send_failed: "Your message wasn't sent because of a problem on our side. Try again later.",
+  };
+  const reason = new URLSearchParams(location.search).get('reason') ?? '';
+  const el = document.querySelector('.reason');
+  if (el && messages[reason]) el.textContent = messages[reason];
+</script>

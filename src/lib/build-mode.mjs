@@ -21,6 +21,15 @@ export const isStrictBuild =
 /** Preview-only pages (review pages) are included only in lenient builds. */
 export const includePreviewPages = !isStrictBuild;
 
+/**
+ * Turnstile site key baked into the contact page (public by design).
+ * Defaults to Cloudflare's always-pass TEST key. Set PUBLIC_TURNSTILE_SITE_KEY
+ * as a Workers Builds variable for real use.
+ */
+export const TURNSTILE_TEST_SITE_KEY = '1x00000000000000000000AA';
+export const turnstileSiteKey = process.env.PUBLIC_TURNSTILE_SITE_KEY || TURNSTILE_TEST_SITE_KEY;
+export const usingTurnstileTestKey = turnstileSiteKey === TURNSTILE_TEST_SITE_KEY;
+
 export const buildModeLabel = isStrictBuild
   ? `strict (production${branch ? `, branch ${branch}` : ''})`
   : `lenient (${onCloudflare ? `preview, branch ${branch}` : 'local'})`;
