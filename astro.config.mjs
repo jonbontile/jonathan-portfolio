@@ -3,29 +3,67 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { readdir, readFile } from 'node:fs/promises';
+import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { isStrictBuild, includePreviewPages, buildModeLabel } from './src/lib/build-mode.mjs';
 
 // The canonical site URL is set only once the production domain is approved
 // (CONTENT_STRATEGY.md: canonical/social metadata only after domain verification).
 // Until then SITE_URL is unset, so no canonical URLs or sitemap are generated.
 const site = process.env.SITE_URL || undefined;
 
-// Preview-only pages (e.g. the design token review page for gate 3).
-// Fail-safe: on Cloudflare (WORKERS_CI set) they are included ONLY when the build
-// reports a branch other than `main`. If the branch variable is missing, they are
-// left out. Local builds always include them.
-const onCloudflare = Boolean(process.env.WORKERS_CI);
-const branch = process.env.WORKERS_CI_BRANCH;
-const includePreviewPages = onCloudflare ? Boolean(branch) && branch !== 'main' : true;
-
+/** Preview-only review pages. Never part of a strict (production) build. */
 /** @type {import('astro').AstroIntegration} */
 const previewPages = {
   name: 'preview-pages',
   hooks: {
     'astro:config:setup': ({ injectRoute, logger }) => {
-      logger.info(`preview pages ${includePreviewPages ? 'included' : 'excluded'} (branch: ${branch ?? 'unset'})`);
+      logger.info(`build mode: ${buildModeLabel}; preview pages ${includePreviewPages ? 'included' : 'excluded'}`);
       if (includePreviewPages) {
         injectRoute({ pattern: '/design-system', entrypoint: './src/review/design-system.astro' });
+        injectRoute({ pattern: '/content-status', entrypoint: './src/review/content-status.astro' });
       }
+    },
+  },
+};
+
+/**
+ * Final safety net for strict builds: fail if any built page still contains an
+ * "[INFORMATION NEEDED" placeholder. Content-level checks happen earlier in
+ * src/lib/content.ts (drafts dropped, unapproved claims refused).
+ */
+const PLACEHOLDER = '[INFORMATION NEEDED';
+
+/** @param {string} dir @returns {AsyncGenerator<string>} */
+async function* htmlFiles(dir) {
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) yield* htmlFiles(path);
+    else if (entry.name.endsWith('.html')) yield path;
+  }
+}
+
+/** @type {import('astro').AstroIntegration} */
+const publicationGuard = {
+  name: 'publication-guard',
+  hooks: {
+    'astro:build:done': async ({ dir, logger }) => {
+      if (!isStrictBuild) {
+        logger.info('lenient build: placeholders allowed');
+        return;
+      }
+      const root = fileURLToPath(dir);
+      const offenders = [];
+      for await (const file of htmlFiles(root)) {
+        if ((await readFile(file, 'utf8')).includes(PLACEHOLDER)) offenders.push(relative(root, file));
+      }
+      if (offenders.length > 0) {
+        throw new Error(
+          `Production build refused: ${offenders.length} page(s) still contain "${PLACEHOLDER}":\n  ${offenders.join('\n  ')}`,
+        );
+      }
+      logger.info('strict build: no placeholders found');
     },
   },
 };
@@ -34,7 +72,7 @@ export default defineConfig({
   site,
   output: 'static',
   trailingSlash: 'always',
-  integrations: [mdx(), previewPages, ...(site ? [sitemap()] : [])],
+  integrations: [mdx(), previewPages, publicationGuard, ...(site ? [sitemap()] : [])],
   vite: {
     plugins: [tailwindcss()],
     // Never inline small assets: inline scripts and data: fonts are blocked by the

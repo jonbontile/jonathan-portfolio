@@ -1,5 +1,9 @@
 ---
 import '../styles/global.css';
+import { assertPublishableContent } from '../lib/content';
+
+// Production builds fail here if any approved content isn't publishable.
+await assertPublishableContent();
 
 interface Props {
   title: string;
