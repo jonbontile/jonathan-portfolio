@@ -10,6 +10,14 @@ A static Astro site served by a Cloudflare Worker with static assets. The same W
 - Cloudflare Workers with static assets (`wrangler.jsonc`), with the Worker code in `worker/`
 - Node.js 26 (`.node-version`), npm 11
 
+## Deployment
+
+Cloudflare Workers Builds is connected to this repository.
+
+- A merge to `main` builds with `npm run build` and deploys with `npx wrangler deploy` to the production Worker (`*.workers.dev` until launch).
+- Every other branch gets a preview build with its own preview URL.
+- `main` is protected, so all changes go through a pull request. Review the preview before merging.
+
 ## Commands
 
 | Command | What it does |
