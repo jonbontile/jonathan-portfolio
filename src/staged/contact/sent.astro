@@ -1,0 +1,18 @@
+---
+/** Result page for form posts without JavaScript (Worker redirects here on success). */
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Section from '../../components/ui/Section.astro';
+import Button from '../../components/ui/Button.astro';
+import LedgerRule from '../../components/ui/LedgerRule.astro';
+---
+
+<SiteLayout title="Message sent" description="Your message was sent.">
+  <Section tone="paper">
+    <div class="max-w-(--container-prose)">
+      <h1>Message sent</h1>
+      <LedgerRule class="mt-6" />
+      <p class="mt-6 text-lg">Thank you. I'll reply by email.</p>
+      <div class="mt-8"><Button href="/" variant="secondary">Back to the homepage</Button></div>
+    </div>
+  </Section>
+</SiteLayout>

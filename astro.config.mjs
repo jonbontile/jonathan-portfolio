@@ -4,10 +4,10 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { readdir, readFile } from 'node:fs/promises';
-import { readdirSync } from 'node:fs';
+import { readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { isStrictBuild, includePreviewPages, buildModeLabel } from './src/lib/build-mode.mjs';
+import { isStrictBuild, includePreviewPages, buildModeLabel, usingTurnstileTestKey } from './src/lib/build-mode.mjs';
 
 // The canonical site URL is set only once the production domain is approved
 // (CONTENT_STRATEGY.md: canonical/social metadata only after domain verification).
@@ -73,6 +73,14 @@ async function* htmlFiles(dir) {
 const publicationGuard = {
   name: 'publication-guard',
   hooks: {
+    'astro:config:setup': () => {
+      // A published contact page must use a real Turnstile site key.
+      if (isStrictBuild && existsSync('src/pages/contact.astro') && usingTurnstileTestKey) {
+        throw new Error(
+          'Production build refused: the contact page is published but PUBLIC_TURNSTILE_SITE_KEY is unset (test key in use).',
+        );
+      }
+    },
     'astro:build:done': async ({ dir, logger }) => {
       if (!isStrictBuild) {
         logger.info('lenient build: placeholders allowed');

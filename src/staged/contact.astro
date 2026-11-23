@@ -1,9 +1,9 @@
 ---
 /**
  * Contact: inquiry form (UI and client-side validation).
- * Sending is NOT wired yet: Phase 5 adds the Worker endpoint, Turnstile and
- * email delivery (gate 7). Until then the endpoint answers 503 and the form
- * shows a clear "not connected yet" message.
+ * Sends through the Worker (/api/contact): server-side validation, rate
+ * limit, Turnstile and Resend. Until the Worker's secrets are configured it
+ * answers 503 and the form shows a clear "not connected yet" message.
  * Staged page (preview-only) until its content is approved.
  */
 import SiteLayout from '../layouts/SiteLayout.astro';
@@ -13,6 +13,7 @@ import Button from '../components/ui/Button.astro';
 import Placeholder from '../components/ui/Placeholder.astro';
 import { inquiryTypes } from '../lib/labels';
 import { contactLimits as L } from '../lib/contact-schema';
+import { turnstileSiteKey, usingTurnstileTestKey } from '../lib/build-mode.mjs';
 
 const field = 'mt-2 block w-full rounded-md border border-border-strong bg-white px-4 py-3 text-ink aria-[invalid=true]:border-2 aria-[invalid=true]:border-error';
 const label = 'block font-medium text-navy-900';
@@ -95,8 +96,10 @@ const error = 'field-error mt-2 text-small font-medium text-error';
             <p id="privacy-error" class={error} hidden></p>
           </div>
 
-          <div class="rounded-md border border-dashed border-border-strong p-4 text-small text-muted">
-            Spam protection (Cloudflare Turnstile) is added in Phase 5.
+          <div>
+            <p class="text-small text-muted">A quick automatic check keeps spam out. It usually needs no action from you.</p>
+            <div class="cf-turnstile mt-3" data-sitekey={turnstileSiteKey} data-action="contact" data-theme="light" data-size="flexible"></div>
+            {usingTurnstileTestKey && <p class="mt-2 text-small text-muted">Preview: Cloudflare test key in use (always passes).</p>}
           </div>
 
           <div>
@@ -127,6 +130,8 @@ const error = 'field-error mt-2 text-small font-medium text-error';
     </div>
   </Section>
 </SiteLayout>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
   import { validateContact, type ContactInput, type ContactErrors } from '../lib/contact-schema';
@@ -201,6 +206,12 @@ const error = 'field-error mt-2 text-small font-medium text-error';
         return;
       }
 
+      const token = (form.elements.namedItem('cf-turnstile-response') as HTMLInputElement | null)?.value;
+      if (!token) {
+        status.textContent = 'The spam check is still running. Wait a moment, then select Send message again.';
+        return;
+      }
+
       submit.disabled = true;
       status.textContent = 'Sending…';
       try {
@@ -209,10 +220,15 @@ const error = 'field-error mt-2 text-small font-medium text-error';
           body: new FormData(form),
           headers: { accept: 'application/json' },
         });
-        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; fields?: ContactErrors };
         if (res.ok && data.ok) {
           form.reset();
           status.textContent = 'Message sent. Thank you, I will reply by email.';
+        } else if (data.error === 'invalid' && data.fields) {
+          show(data.fields);
+          summary.focus();
+        } else if (data.error === 'verification_failed') {
+          status.textContent = "The spam check didn't pass, so your message wasn't sent. Try again, or use the email address on this page.";
         } else if (data.error === 'not_available_yet') {
           status.textContent =
             "The form isn't connected yet, so your message wasn't sent. Please use the email address listed on this page.";
@@ -225,6 +241,8 @@ const error = 'field-error mt-2 text-small font-medium text-error';
         status.textContent = "Your message wasn't sent because the connection failed. Check your connection and try again.";
       } finally {
         submit.disabled = false;
+        // Turnstile tokens are single-use: get a fresh one for any retry.
+        (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
       }
     });
   }
