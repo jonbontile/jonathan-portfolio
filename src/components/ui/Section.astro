@@ -14,7 +14,9 @@ const { tone = 'white', id, labelledby, class: className = '' } = Astro.props;
 const tones = {
   white: 'bg-white',
   paper: 'bg-paper',
-  navy: 'bg-navy-900 text-white [&_h2]:text-white [&_h3]:text-white [&_a]:text-white',
+  // Whiten plain links only: buttons (.btn) keep their own colors, so the
+  // primary button stays navy-on-orange (4.78:1), never white-on-orange (3.45:1).
+  navy: 'bg-navy-900 text-white [&_h2]:text-white [&_h3]:text-white [&_a:not(.btn)]:text-white',
 };
 ---
 

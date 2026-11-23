@@ -55,7 +55,20 @@ const isCurrent = (href: string) => current === href || (href !== '/' && current
 </header>
 
 <style>
-  /* With JavaScript, collapse the mobile menu behind the toggle. */
+  /*
+   * With JavaScript, collapse the mobile menu behind the toggle.
+   * `scripting: enabled` applies from the FIRST paint, so the header never
+   * renders expanded and then collapses (that jump caused CLS ≈ 0.38).
+   * The html.js rule is a fallback for browsers without the media feature.
+   */
+  @media (max-width: 63.99rem) and (scripting: enabled) {
+    .menu-toggle {
+      display: inline-flex;
+    }
+    .site-nav:not(.is-open) {
+      display: none;
+    }
+  }
   @media (max-width: 63.99rem) {
     :global(html.js) .menu-toggle {
       display: inline-flex;

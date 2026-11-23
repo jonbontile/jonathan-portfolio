@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Seo from '../components/common/Seo.astro';
 import { assertPublishableContent } from '../lib/content';
 
 // Production builds fail here if any approved content isn't publishable.
@@ -8,9 +9,10 @@ await assertPublishableContent();
 interface Props {
   title: string;
   description?: string;
+  isHome?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, isHome } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,11 +20,8 @@ const { title, description } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Pre-launch: keep every page out of search results until gate 9. -->
-    <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    <Seo title={title} description={description} isHome={isHome} />
   </head>
   <body class="min-h-dvh antialiased">
     <a

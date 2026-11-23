@@ -20,7 +20,7 @@ const { href, variant = 'primary', type = 'button', class: className = '', ...re
   HTMLAttributes<'a'>;
 
 const base =
-  'inline-flex min-h-12 items-center justify-center gap-2 rounded-md px-6 py-3 font-display text-base font-semibold no-underline transition-colors duration-150 hover:no-underline disabled:cursor-not-allowed disabled:opacity-60';
+  'btn inline-flex min-h-12 items-center justify-center gap-2 rounded-md px-6 py-3 font-display text-base font-semibold no-underline transition-colors duration-150 hover:no-underline disabled:cursor-not-allowed disabled:opacity-60';
 
 const variants: Record<Variant, string> = {
   // Hover/pressed get LIGHTER, because darker orange drops navy-text contrast below
