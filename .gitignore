@@ -24,3 +24,7 @@ bontile-portfolio-documentation.zip
 # Private planning documents and evidence registers: a separate private
 # repository (jonathan-portfolio-docs) checked out locally at docs/.
 docs/
+
+# Playwright output
+test-results/
+playwright-report/

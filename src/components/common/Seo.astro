@@ -1,0 +1,55 @@
+---
+/**
+ * Page metadata (CONTENT_STRATEGY.md "Search and media").
+ *
+ * - Titles: "<Page> | Jonathan Bontile" (the homepage uses the name alone).
+ * - Canonical and og:url only when the site URL is set (SITE_URL, at launch):
+ *   "canonical/social metadata only after domain verification".
+ * - JSON-LD Person only from the APPROVED profile entry, using approved fields
+ *   only: no fabricated structured data. Drafts produce none.
+ * - robots: noindex until launch (gate 9).
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Set on the homepage so the title is the name alone. */
+  isHome?: boolean;
+}
+
+const SITE_NAME = 'Jonathan Bontile';
+const { title, description, isHome = false } = Astro.props;
+const fullTitle = isHome || title === SITE_NAME ? SITE_NAME : `${title} | ${SITE_NAME}`;
+
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+
+// Structured data from the approved profile only.
+const [profile] = (await getCollection('profile')).filter((p) => p.data.status === 'approved');
+const jsonLd = profile
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: profile.data.name,
+      jobTitle: profile.data.headline,
+      ...(Astro.site ? { url: Astro.site.href } : {}),
+    }
+  : undefined;
+---
+
+<title>{fullTitle}</title>
+{description && <meta name="description" content={description} />}
+{canonical && <link rel="canonical" href={canonical} />}
+
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en" />
+<meta property="og:title" content={fullTitle} />
+{description && <meta property="og:description" content={description} />}
+{canonical && <meta property="og:url" content={canonical} />}
+<meta name="twitter:card" content="summary" />
+
+<!-- Pre-launch: keep every page out of search results until gate 9. -->
+<meta name="robots" content="noindex, nofollow" />
+
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

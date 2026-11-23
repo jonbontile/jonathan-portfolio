@@ -27,6 +27,7 @@ Cloudflare Workers Builds is connected to this repository.
 | `npm run build` | Build the static site to `dist/` |
 | `npm run preview` | Build, then run the Worker and assets locally with Wrangler |
 | `npm run check` | Type-check the Astro site and the Worker |
+| `npm run test:a11y` | Build, run the Worker locally and test every page: axe WCAG 2.2 AA (desktop and mobile), headings, skip link, 320 px reflow, mobile menu with and without JavaScript, reduced motion. Uses your installed Chrome |
 | `npm run deploy` | Build and deploy with Wrangler. **Production deploys need approval.** Normally Workers Builds deploys from `main` |
 
 ## Content and publishing
