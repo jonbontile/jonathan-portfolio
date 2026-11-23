@@ -1,0 +1,70 @@
+---
+/**
+ * Experience: the full career timeline, every entry typed as employment,
+ * freelance, business ownership or independent project.
+ * Staged page (preview-only) until its content is approved.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/common/PageHeader.astro';
+import Section from '../components/ui/Section.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+import Placeholder from '../components/ui/Placeholder.astro';
+import ExperienceItem from '../components/common/ExperienceItem.astro';
+import { getPublished, isDraft, sortExperience } from '../lib/content';
+import { engagementLabel } from '../lib/labels';
+
+const entries = sortExperience(await getPublished('experience'));
+const [profile] = await getPublished('profile');
+---
+
+<SiteLayout title="Experience" description="Career timeline: employment, freelance work, business ownership and projects.">
+  <PageHeader title="Experience" draft={entries.some(isDraft)}>
+    <p class="mt-5 max-w-(--container-prose) text-lg text-muted">
+      Each entry says what kind of work it was, so employment, freelance engagements, business ownership and independent
+      projects are never mixed up.
+    </p>
+    <ul class="mt-5 flex flex-wrap gap-2" role="list" aria-label="Engagement types">
+      {
+        Object.values(engagementLabel).map((label) => (
+          <li>
+            <Badge>{label}</Badge>
+          </li>
+        ))
+      }
+    </ul>
+  </PageHeader>
+
+  <Section tone="white" labelledby="timeline-title">
+    <h2 id="timeline-title" class="sr-only">Timeline</h2>
+    {
+      entries.length === 0 ? (
+        <Placeholder need="work history (credentials register EX-01 onward)" />
+      ) : (
+        <ol class="relative max-w-3xl border-l-2 border-navy-900/15 pl-8" role="list">
+          {entries.map((e) => (
+            <ExperienceItem entry={e} expanded />
+          ))}
+        </ol>
+      )
+    }
+  </Section>
+
+  <Section tone="paper">
+    <div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <h2 class="text-h3">Hiring for a finance role?</h2>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <Button href="/contact/?type=employment">Get in touch</Button>
+        {
+          profile?.data.resumePdf ? (
+            <Button href={profile.data.resumePdf} variant="secondary" download>
+              Download resume (PDF)
+            </Button>
+          ) : (
+            <Placeholder need="resume PDF" />
+          )
+        }
+      </div>
+    </div>
+  </Section>
+</SiteLayout>

@@ -1,0 +1,26 @@
+---
+/**
+ * Top of every inner page: title, optional intro, ledger rule.
+ * Pass `draft` to show the Draft badge while the page's content is unapproved.
+ */
+import Badge from '../ui/Badge.astro';
+import LedgerRule from '../ui/LedgerRule.astro';
+
+interface Props {
+  title: string;
+  intro?: string;
+  draft?: boolean;
+}
+
+const { title, intro, draft = false } = Astro.props;
+---
+
+<header class="bg-paper pt-14 pb-10 sm:pt-20">
+  <div class="mx-auto w-full max-w-(--container-page) px-4 sm:px-6 lg:px-8">
+    {draft && <Badge tone="outline" class="mb-5">Draft content</Badge>}
+    <h1>{title}</h1>
+    {intro && <p class="mt-5 max-w-(--container-prose) text-lg text-muted">{intro}</p>}
+    <slot />
+    <LedgerRule class="mt-10" />
+  </div>
+</header>

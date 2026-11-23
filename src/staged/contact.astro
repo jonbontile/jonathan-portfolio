@@ -1,0 +1,231 @@
+---
+/**
+ * Contact: inquiry form (UI and client-side validation).
+ * Sending is NOT wired yet: Phase 5 adds the Worker endpoint, Turnstile and
+ * email delivery (gate 7). Until then the endpoint answers 503 and the form
+ * shows a clear "not connected yet" message.
+ * Staged page (preview-only) until its content is approved.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/common/PageHeader.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Placeholder from '../components/ui/Placeholder.astro';
+import { inquiryTypes } from '../lib/labels';
+import { contactLimits as L } from '../lib/contact-schema';
+
+const field = 'mt-2 block w-full rounded-md border border-border-strong bg-white px-4 py-3 text-ink aria-[invalid=true]:border-2 aria-[invalid=true]:border-error';
+const label = 'block font-medium text-navy-900';
+const hint = 'mt-1 text-small text-muted';
+const error = 'field-error mt-2 text-small font-medium text-error';
+---
+
+<SiteLayout title="Contact" description="Send an inquiry about bookkeeping, reporting or a role.">
+  <PageHeader
+    title="Contact"
+    intro="Tell me what you need. Required fields are marked."
+    draft
+  />
+
+  <Section tone="white" labelledby="form-title">
+    <div class="grid gap-12 lg:grid-cols-[7fr_5fr] lg:gap-16">
+      <div>
+        <h2 id="form-title" class="sr-only">Inquiry form</h2>
+
+        <div class="form-summary mb-8 rounded-lg border-2 border-error p-5" tabindex="-1" hidden>
+          <h3 class="text-h4 text-error">Check the highlighted fields</h3>
+          <ul class="summary-list mt-3 list-disc space-y-1 pl-5 text-small" role="list"></ul>
+        </div>
+
+        <form class="contact-form grid gap-6" action="/api/contact" method="post" novalidate>
+          <div>
+            <label for="name" class={label}>Name <span class="text-muted">(required)</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" required maxlength={L.name.max} aria-describedby="name-error" class={field} />
+            <p id="name-error" class={error} hidden></p>
+          </div>
+
+          <div>
+            <label for="email" class={label}>Email <span class="text-muted">(required)</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" required maxlength={L.email.max} aria-describedby="email-error" class={field} />
+            <p id="email-error" class={error} hidden></p>
+          </div>
+
+          <div>
+            <label for="inquiryType" class={label}>What is your inquiry about? <span class="text-muted">(required)</span></label>
+            <select id="inquiryType" name="inquiryType" required aria-describedby="inquiryType-error" class={field}>
+              <option value="">Choose one</option>
+              {inquiryTypes.map((t) => <option value={t.value}>{t.label}</option>)}
+            </select>
+            <p id="inquiryType-error" class={error} hidden></p>
+          </div>
+
+          <div class="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label for="company" class={label}>Company <span class="text-muted">(optional)</span></label>
+              <input id="company" name="company" type="text" autocomplete="organization" maxlength={L.company.max} aria-describedby="company-error" class={field} />
+              <p id="company-error" class={error} hidden></p>
+            </div>
+            <div>
+              <label for="subject" class={label}>Subject <span class="text-muted">(optional)</span></label>
+              <input id="subject" name="subject" type="text" maxlength={L.subject.max} aria-describedby="subject-error" class={field} />
+              <p id="subject-error" class={error} hidden></p>
+            </div>
+          </div>
+
+          <div>
+            <label for="message" class={label}>Message <span class="text-muted">(required)</span></label>
+            <p id="message-hint" class={hint}>At least {L.message.min} characters. What do you need, and by when?</p>
+            <textarea id="message" name="message" rows="7" required minlength={L.message.min} maxlength={L.message.max} aria-describedby="message-hint message-error" class={field}></textarea>
+            <p id="message-error" class={error} hidden></p>
+          </div>
+
+          <!-- Honeypot: hidden from people and assistive technology; bots fill it in. -->
+          <div class="hidden" aria-hidden="true">
+            <label for="website">Leave this field empty</label>
+            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div>
+            <div class="flex items-start gap-3">
+              <input id="privacy" name="privacy" type="checkbox" value="yes" required aria-describedby="privacy-error" class="mt-1 size-5 shrink-0 accent-navy-900" />
+              <label for="privacy" class="text-small">
+                I have read the <a href="/privacy/">privacy notice</a>. My details will be used only to reply to this inquiry.
+              </label>
+            </div>
+            <p id="privacy-error" class={error} hidden></p>
+          </div>
+
+          <div class="rounded-md border border-dashed border-border-strong p-4 text-small text-muted">
+            Spam protection (Cloudflare Turnstile) is added in Phase 5.
+          </div>
+
+          <div>
+            <Button type="submit" class="submit-btn">Send message</Button>
+          </div>
+
+          <div class="form-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <aside aria-labelledby="other-ways" class="self-start rounded-lg border border-line bg-paper p-6 sm:p-8">
+        <h2 id="other-ways" class="text-h4">Other ways to reach me</h2>
+        <dl class="mt-5 space-y-4 text-small">
+          <div>
+            <dt class="font-semibold text-navy-900">Email</dt>
+            <dd class="mt-1"><Placeholder need="public contact email (OT-03)" /></dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-navy-900">LinkedIn</dt>
+            <dd class="mt-1"><Placeholder need="LinkedIn profile (MD-03)" /></dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-navy-900">Response time</dt>
+            <dd class="mt-1"><Placeholder need="typical response time, only if confirmed (PS-07)" /></dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </Section>
+</SiteLayout>
+
+<script>
+  import { validateContact, type ContactInput, type ContactErrors } from '../lib/contact-schema';
+  import { inquiryTypes } from '../lib/labels';
+
+  const form = document.querySelector<HTMLFormElement>('.contact-form');
+  const summary = document.querySelector<HTMLElement>('.form-summary');
+  const summaryList = summary?.querySelector('.summary-list');
+  const status = document.querySelector<HTMLElement>('.form-status');
+  const submit = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  if (form && summary && summaryList && status && submit) {
+    // Preselect the inquiry type from ?type=… (links from Services/Experience).
+    const type = new URLSearchParams(location.search).get('type');
+    const select = form.elements.namedItem('inquiryType') as HTMLSelectElement;
+    if (type && inquiryTypes.some((t) => t.value === type)) select.value = type;
+
+    const read = (): ContactInput => {
+      const f = new FormData(form);
+      const s = (k: string) => String(f.get(k) ?? '');
+      return {
+        name: s('name'),
+        email: s('email'),
+        inquiryType: s('inquiryType'),
+        company: s('company'),
+        subject: s('subject'),
+        message: s('message'),
+        privacy: f.get('privacy') === 'yes',
+      };
+    };
+
+    const labels: Record<string, string> = {
+      name: 'Name',
+      email: 'Email',
+      inquiryType: 'Inquiry type',
+      company: 'Company',
+      subject: 'Subject',
+      message: 'Message',
+      privacy: 'Privacy notice',
+    };
+
+    const show = (errors: ContactErrors) => {
+      summaryList.replaceChildren();
+      for (const key of Object.keys(labels)) {
+        const input = form.elements.namedItem(key) as HTMLInputElement | null;
+        const msg = document.getElementById(`${key}-error`);
+        const text = errors[key as keyof ContactErrors];
+        if (input) input.setAttribute('aria-invalid', text ? 'true' : 'false');
+        if (msg) {
+          msg.textContent = text ?? '';
+          msg.hidden = !text;
+        }
+        if (text) {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `#${key}`;
+          a.textContent = `${labels[key]}: ${text}`;
+          li.append(a);
+          summaryList.append(li);
+        }
+      }
+      summary.hidden = summaryList.childElementCount === 0;
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.textContent = '';
+      const errors = validateContact(read());
+      show(errors);
+      if (Object.keys(errors).length > 0) {
+        summary.focus();
+        return;
+      }
+
+      submit.disabled = true;
+      status.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { accept: 'application/json' },
+        });
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+        if (res.ok && data.ok) {
+          form.reset();
+          status.textContent = 'Message sent. Thank you, I will reply by email.';
+        } else if (data.error === 'not_available_yet') {
+          status.textContent =
+            "The form isn't connected yet, so your message wasn't sent. Please use the email address listed on this page.";
+        } else if (res.status === 429) {
+          status.textContent = 'Too many messages in a short time. Wait a minute, then try again.';
+        } else {
+          status.textContent = "Your message wasn't sent because of a problem on our side. Try again, or use the email address on this page.";
+        }
+      } catch {
+        status.textContent = "Your message wasn't sent because the connection failed. Check your connection and try again.";
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  }
+</script>

@@ -2,8 +2,9 @@
 /**
  * Renders a content entry's Markdown body.
  * While a body still contains "[INFORMATION NEEDED" markers (drafts, previews
- * only: production refuses them), it's shown as plain paragraphs with the
- * markers highlighted. A finished body renders as normal Markdown.
+ * only: production refuses them), it's shown in a simple form: "#"-headings
+ * stay headings and other text becomes paragraphs with the markers highlighted.
+ * A finished body renders as normal Markdown.
  */
 import { render, type CollectionEntry, type CollectionKey } from 'astro:content';
 import Fact from './Fact.astro';
@@ -16,7 +17,44 @@ const { entry } = Astro.props;
 const raw = (entry.body ?? '').trim();
 const hasMarkers = raw.includes('[INFORMATION NEEDED');
 const Content = hasMarkers ? undefined : (await render(entry)).Content;
-const paragraphs = hasMarkers ? raw.split(/\n\s*\n/).map((p) => p.replace(/^#+\s*/, '').trim()) : [];
+
+type Block = { kind: 'h2' | 'h3' | 'p'; text: string };
+const blocks: Block[] = [];
+if (hasMarkers) {
+  let para: string[] = [];
+  const flush = () => {
+    if (para.length) blocks.push({ kind: 'p', text: para.join(' ') });
+    para = [];
+  };
+  for (const line of raw.split('\n')) {
+    const heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      flush();
+      blocks.push({ kind: heading[1].length <= 2 ? 'h2' : 'h3', text: heading[2] });
+    } else if (line.trim() === '') {
+      flush();
+    } else {
+      para.push(line.trim());
+    }
+  }
+  flush();
+}
 ---
 
-{Content ? <Content /> : paragraphs.map((p, i) => <p class={i > 0 ? 'mt-3' : ''}><Fact value={p} /></p>)}
+{
+  Content ? (
+    <Content />
+  ) : (
+    blocks.map((b, i) =>
+      b.kind === 'h2' ? (
+        <h2>{b.text}</h2>
+      ) : b.kind === 'h3' ? (
+        <h3>{b.text}</h3>
+      ) : (
+        <p class={i > 0 ? 'mt-3' : ''}>
+          <Fact value={b.text} />
+        </p>
+      ),
+    )
+  )
+}

@@ -2,19 +2,21 @@
 /**
  * Bordered surface for grouped content (pathways, case studies, credentials).
  * Flat by design: no drop shadow. Hover lift is opt-in for linked cards only.
+ * Extra attributes (e.g. data-* used by filters) pass through to the element.
  */
 interface Props {
   as?: 'div' | 'article' | 'li';
   interactive?: boolean;
   class?: string;
+  [attr: string]: unknown;
 }
 
-const { as: Tag = 'div', interactive = false, class: className = '' } = Astro.props;
+const { as: Tag = 'div', interactive = false, class: className = '', ...attrs } = Astro.props;
 const hover = interactive
   ? 'transition-[border-color,transform] duration-150 hover:-translate-y-0.5 hover:border-navy-900 focus-within:border-navy-900'
   : '';
 ---
 
-<Tag class={`relative rounded-lg border border-line bg-white p-6 sm:p-8 ${hover} ${className}`}>
+<Tag class={`relative rounded-lg border border-line bg-white p-6 sm:p-8 ${hover} ${className}`} {...attrs}>
   <slot />
 </Tag>

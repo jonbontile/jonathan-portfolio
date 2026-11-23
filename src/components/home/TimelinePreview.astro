@@ -1,33 +1,19 @@
 ---
 /**
  * Career timeline preview: the most recent entries from the experience
- * collection. Every entry shows its engagement type in words. The timeline is a
- * real sequence, so it uses an ordered list with the ledger spine.
- * Details expand with native <details>.
+ * collection, on the ledger spine. The full list is on /experience/.
  */
 import type { CollectionEntry } from 'astro:content';
-import EntryBody from '../ui/EntryBody.astro';
 import Section from '../ui/Section.astro';
-import Badge from '../ui/Badge.astro';
 import LedgerRule from '../ui/LedgerRule.astro';
-import Placeholder from '../ui/Placeholder.astro';
-import Fact from '../ui/Fact.astro';
-import { isDraft } from '../../lib/content';
+import ExperienceItem from '../common/ExperienceItem.astro';
+import { sortExperience } from '../../lib/content';
 
 interface Props {
   experience: CollectionEntry<'experience'>[];
 }
 
-const engagementLabel: Record<string, string> = {
-  employment: 'Employment',
-  freelance: 'Freelance',
-  'business-ownership': 'Business ownership',
-  independent: 'Independent project',
-};
-
-const entries = [...Astro.props.experience]
-  .sort((a, b) => (b.data.start ?? '').localeCompare(a.data.start ?? ''))
-  .slice(0, 4);
+const entries = sortExperience(Astro.props.experience).slice(0, 4);
 ---
 
 {
@@ -42,50 +28,7 @@ const entries = [...Astro.props.experience]
       <LedgerRule class="mt-6 mb-10" />
       <ol class="relative max-w-3xl border-l-2 border-navy-900/15 pl-8" role="list">
         {entries.map((e) => (
-          <li class="relative pb-10 last:pb-0">
-            <span
-              aria-hidden="true"
-              class={`absolute top-1.5 -left-[2.55rem] size-4 rounded-full border-2 border-white ${e.data.ongoing ? 'bg-accent' : 'bg-navy-900'}`}
-            />
-            <p class="tabular text-small font-semibold text-muted">
-              {e.data.start ? (
-                <>
-                  <time datetime={e.data.start}>{e.data.start}</time> –{' '}
-                  {e.data.ongoing ? 'present' : e.data.end && <time datetime={e.data.end}>{e.data.end}</time>}
-                </>
-              ) : (
-                <Placeholder need="dates" />
-              )}
-            </p>
-            <div class="mt-2 flex flex-wrap gap-2">
-              {isDraft(e) && <Badge tone="outline">Draft</Badge>}
-              {e.data.engagementType && <Badge>{engagementLabel[e.data.engagementType]}</Badge>}
-            </div>
-            <h3 class="mt-3 text-h4">
-              {e.data.title}, {e.data.organization}
-            </h3>
-            <details class="group mt-2">
-              <summary class="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 text-small font-semibold text-link [&::-webkit-details-marker]:hidden">
-                <svg
-                  aria-hidden="true"
-                  class="size-4 transition-transform duration-150 group-open:rotate-90"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M6 3l5 5-5 5" />
-                </svg>
-                Details
-              </summary>
-              <div class="mt-2 text-small text-muted">
-                <p><Fact value={e.data.summary} /></p>
-                <div class="mt-2">
-                  <EntryBody entry={e} />
-                </div>
-              </div>
-            </details>
-          </li>
+          <ExperienceItem entry={e} />
         ))}
       </ol>
     </Section>

@@ -1,0 +1,133 @@
+---
+/**
+ * Case study detail, following the CONTENT_STRATEGY.md template:
+ * context, scope, approach, outcome (only if documented, labeled by source),
+ * lessons, anonymization note. A summary panel carries the facts that keep
+ * engagement types distinct.
+ * Staged page (preview-only) until its content is approved.
+ */
+import type { CollectionEntry } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Section from '../../components/ui/Section.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import Fact from '../../components/ui/Fact.astro';
+import Placeholder from '../../components/ui/Placeholder.astro';
+import EntryBody from '../../components/ui/EntryBody.astro';
+import LedgerRule from '../../components/ui/LedgerRule.astro';
+import { getPublished, isDraft } from '../../lib/content';
+import { engagementLabel, progressLabel } from '../../lib/labels';
+
+export async function getStaticPaths() {
+  const cases = await getPublished('caseStudies');
+  return cases.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'caseStudies'>;
+}
+
+const { entry: c } = Astro.props;
+const d = c.data;
+const sourceLabel = {
+  observed: 'Observed directly',
+  'client-reported': 'Reported by the client',
+  documented: 'Documented in records',
+};
+
+const facts: { label: string; value?: string; need: string }[] = [
+  { label: 'Client', value: d.clientDescriptor, need: 'anonymized client descriptor' },
+  { label: 'Industry', value: d.industry, need: 'industry' },
+  { label: 'Engagement', value: d.engagementType && engagementLabel[d.engagementType], need: 'engagement type' },
+  { label: 'Status', value: d.progress && progressLabel[d.progress], need: 'ongoing or completed' },
+  { label: 'Role', value: d.role, need: 'role' },
+  { label: 'Period', value: d.period, need: 'period' },
+  { label: 'Tools', value: d.tools.length ? d.tools.join(', ') : undefined, need: 'tools used (verified only)' },
+];
+---
+
+<SiteLayout title={d.title} description={d.summary.startsWith('[INFORMATION') ? undefined : d.summary}>
+  <header class="bg-paper pt-14 pb-10 sm:pt-20">
+    <div class="mx-auto w-full max-w-(--container-page) px-4 sm:px-6 lg:px-8">
+      <p class="text-small"><a href="/case-studies/">All case studies</a></p>
+      <div class="mt-5 flex flex-wrap gap-2">
+        {isDraft(c) && <Badge tone="outline">Draft content</Badge>}
+        {d.engagementType && <Badge>{engagementLabel[d.engagementType]}</Badge>}
+        {d.containsSyntheticData && <Badge tone="navy">Includes illustrative data</Badge>}
+      </div>
+      <h1 class="mt-5 max-w-4xl">{d.title}</h1>
+      <p class="mt-5 max-w-(--container-prose) text-lg text-muted"><Fact value={d.summary} /></p>
+      <LedgerRule class="mt-10" />
+    </div>
+  </header>
+
+  <Section tone="white">
+    <div class="grid gap-12 lg:grid-cols-[8fr_4fr] lg:gap-16">
+      <article class="case-body max-w-(--container-prose)">
+        <EntryBody entry={c} />
+
+        {
+          d.outcome && (
+            <section aria-labelledby="outcome-title" class="mt-10 rounded-lg border-l-4 border-accent bg-paper p-6">
+              <h2 id="outcome-title" class="text-h4">
+                Outcome
+              </h2>
+              <p class="mt-3">
+                <Fact value={d.outcome.text} />
+              </p>
+              <p class="mt-3 text-small font-medium text-muted">Source: {sourceLabel[d.outcome.source]}</p>
+            </section>
+          )
+        }
+
+        {
+          d.containsSyntheticData && (
+            <p class="mt-8 text-small font-medium text-navy-900">
+              Charts and figures on this page use illustrative data, not client figures.
+            </p>
+          )
+        }
+      </article>
+
+      <aside aria-labelledby="summary-title" class="self-start lg:sticky lg:top-24">
+        <div class="rounded-lg border border-line p-6">
+          <h2 id="summary-title" class="text-h4">Summary</h2>
+          <dl class="mt-4 border-t border-navy-900">
+            {
+              facts.map((f) => (
+                <div class="border-b border-line py-3">
+                  <dt class="text-small font-semibold text-navy-900">{f.label}</dt>
+                  <dd class="mt-1 text-small">{f.value ? <Fact value={f.value} /> : <Placeholder need={f.need} />}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          <p class="mt-4 text-small text-muted">
+            {
+              d.publicationPermission === 'anonymized'
+                ? 'Details have been anonymized to protect client confidentiality.'
+                : 'Client named with written permission.'
+            }
+          </p>
+        </div>
+        <div class="mt-6">
+          <Button href="/contact/?type=freelance-services" class="w-full">Discuss a similar project</Button>
+        </div>
+      </aside>
+    </div>
+  </Section>
+</SiteLayout>
+
+<style>
+  .case-body :global(h2) {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    margin-top: 2.5rem;
+  }
+  .case-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .case-body :global(p) {
+    margin-top: 1rem;
+  }
+</style>

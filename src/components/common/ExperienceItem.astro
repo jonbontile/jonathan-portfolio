@@ -1,0 +1,88 @@
+---
+/**
+ * One entry on the career timeline (homepage preview and Experience page).
+ * Engagement type is always shown in words. `expanded` shows the details
+ * openly; otherwise they sit in a native <details>.
+ */
+import type { CollectionEntry } from 'astro:content';
+import Badge from '../ui/Badge.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import Fact from '../ui/Fact.astro';
+import EntryBody from '../ui/EntryBody.astro';
+import { isDraft } from '../../lib/content';
+import { engagementLabel } from '../../lib/labels';
+
+interface Props {
+  entry: CollectionEntry<'experience'>;
+  expanded?: boolean;
+}
+
+const { entry: e, expanded = false } = Astro.props;
+---
+
+<li class="relative pb-10 last:pb-0">
+  <span
+    aria-hidden="true"
+    class={`absolute top-1.5 -left-[2.55rem] size-4 rounded-full border-2 border-white ${e.data.ongoing ? 'bg-accent' : 'bg-navy-900'}`}
+  ></span>
+  <p class="tabular text-small font-semibold text-muted">
+    {
+      e.data.start ? (
+        <>
+          <time datetime={e.data.start}>{e.data.start}</time> –{' '}
+          {e.data.ongoing ? 'present' : e.data.end && <time datetime={e.data.end}>{e.data.end}</time>}
+        </>
+      ) : (
+        <Placeholder need="dates" />
+      )
+    }
+  </p>
+  <div class="mt-2 flex flex-wrap gap-2">
+    {isDraft(e) && <Badge tone="outline">Draft</Badge>}
+    {e.data.engagementType && <Badge>{engagementLabel[e.data.engagementType]}</Badge>}
+  </div>
+  <h3 class="mt-3 text-h4">{e.data.title}, {e.data.organization}</h3>
+  {
+    expanded ? (
+      <div class="mt-3 max-w-(--container-prose) text-muted">
+        <p>
+          <Fact value={e.data.summary} />
+        </p>
+        {e.data.responsibilities.length > 0 && (
+          <ul class="mt-3 list-disc space-y-1 pl-5">
+            {e.data.responsibilities.map((r) => (
+              <li>{r}</li>
+            ))}
+          </ul>
+        )}
+        <div class="mt-3">
+          <EntryBody entry={e} />
+        </div>
+      </div>
+    ) : (
+      <details class="group mt-2">
+        <summary class="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 text-small font-semibold text-link [&::-webkit-details-marker]:hidden">
+          <svg
+            aria-hidden="true"
+            class="size-4 transition-transform duration-150 group-open:rotate-90"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M6 3l5 5-5 5" />
+          </svg>
+          Details
+        </summary>
+        <div class="mt-2 text-small text-muted">
+          <p>
+            <Fact value={e.data.summary} />
+          </p>
+          <div class="mt-2">
+            <EntryBody entry={e} />
+          </div>
+        </div>
+      </details>
+    )
+  }
+</li>
