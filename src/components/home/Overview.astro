@@ -1,0 +1,54 @@
+---
+/**
+ * Professional overview: positioning statement plus a ledger-style facts table.
+ * Every fact comes from content files; anything not yet supplied shows a
+ * placeholder (which production refuses to publish).
+ */
+import type { CollectionEntry } from 'astro:content';
+import EntryBody from '../ui/EntryBody.astro';
+import Section from '../ui/Section.astro';
+import LedgerRule from '../ui/LedgerRule.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import Fact from '../ui/Fact.astro';
+
+interface Props {
+  profile?: CollectionEntry<'profile'>;
+  business?: CollectionEntry<'experience'>;
+  license?: CollectionEntry<'qualifications'>;
+}
+
+const { profile, business, license } = Astro.props;
+
+const facts: { label: string; value?: string; need: string }[] = [
+  { label: 'Credential', value: license?.data.name, need: 'verified credential and jurisdiction' },
+  {
+    label: 'Business',
+    value: business ? `${business.data.title}, ${business.data.organization}` : undefined,
+    need: 'registered business name and role',
+  },
+  { label: 'Focus', need: 'areas of focus' },
+  { label: 'Experience', need: 'years of experience (only if documented)' },
+  { label: 'Works with', need: 'regions and time zones served' },
+];
+---
+
+<Section tone="white" labelledby="overview-title">
+  <h2 id="overview-title">Professional overview</h2>
+  <LedgerRule class="mt-6 mb-10" />
+  <div class="grid gap-12 lg:grid-cols-[7fr_5fr] lg:gap-16">
+    <div class="max-w-(--container-prose) text-lg">
+      {profile ? <EntryBody entry={profile} /> : <Placeholder need="positioning statement" />}
+      <p class="mt-6"><a href="/about/">More about me</a></p>
+    </div>
+    <dl class="border-t border-navy-900">
+      {
+        facts.map((f) => (
+          <div class="grid grid-cols-[8rem_1fr] gap-4 border-b border-line py-4">
+            <dt class="text-small font-semibold text-navy-900">{f.label}</dt>
+            <dd class="text-small">{f.value ? <Fact value={f.value} /> : <Placeholder need={f.need} />}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</Section>

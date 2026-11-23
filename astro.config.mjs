@@ -23,6 +23,7 @@ const previewPages = {
       if (includePreviewPages) {
         injectRoute({ pattern: '/design-system', entrypoint: './src/review/design-system.astro' });
         injectRoute({ pattern: '/content-status', entrypoint: './src/review/content-status.astro' });
+        injectRoute({ pattern: '/prototype', entrypoint: './src/review/homepage-prototype.astro' });
       }
     },
   },

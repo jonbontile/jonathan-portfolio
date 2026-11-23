@@ -1,0 +1,15 @@
+---
+/**
+ * Renders a content value. If the value is (or contains) an
+ * "[INFORMATION NEEDED: ...]" marker, it's shown with the placeholder styling;
+ * otherwise it's plain text. The text is unchanged, so the guard still sees it.
+ */
+interface Props {
+  value?: string;
+}
+
+const { value = '' } = Astro.props;
+const parts = value.split(/(\[INFORMATION NEEDED[^\]]*\])/g).filter(Boolean);
+---
+
+{parts.map((part) => (part.startsWith('[INFORMATION NEEDED') ? <mark class="info-needed">{part}</mark> : part))}

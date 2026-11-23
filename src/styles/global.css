@@ -165,6 +165,22 @@
   }
 }
 
+@layer components {
+  /* Missing-fact marker (Placeholder, Fact, EntryBody).
+     #C73500 on #FFF1E6 = 4.82:1. */
+  .info-needed {
+    border-radius: 0.25rem;
+    background-color: #fff1e6;
+    color: var(--color-accent-text);
+    font-size: var(--text-small);
+    font-weight: 500;
+    padding: 0.125rem 0.375rem;
+    outline: 1px dashed var(--color-accent-text);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
