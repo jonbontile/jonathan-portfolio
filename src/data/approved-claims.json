@@ -1,4 +1,4 @@
 {
   "$comment": "IDs of claims approved for publication in the private evidence registers (jonathan-portfolio-docs: PROFESSIONAL_CREDENTIALS_REGISTER.md and CONTENT_EVIDENCE_REGISTER.md). IDs only, never evidence. Add an ID here only when its register row is Verified and Approved. Production builds fail if published content cites an ID that isn't listed.",
-  "approved": ["PS-01", "PS-02"]
+  "approved": ["PS-01", "PS-02", "ID-01", "ID-02", "CR-01"]
 }

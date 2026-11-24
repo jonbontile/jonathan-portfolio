@@ -2,7 +2,7 @@
 status: draft
 claimIds: [ID-01, ID-02, ID-04, PS-03]
 name: Jonathan Bontile
-credential: "CPA"
+credential: "CPA (Philippines)"
 headline: Accounting & Bookkeeping Professional
 summary: >-
   Helping growing businesses maintain accurate financial records, improve
