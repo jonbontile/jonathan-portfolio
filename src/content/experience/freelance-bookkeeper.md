@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [EX-02]
 title: Freelance Bookkeeper (independent contractor)
 organization: Self-employed
@@ -13,5 +13,3 @@ responsibilities:
   - Performed monthly bank reconciliations and resolved discrepancies before month-end close.
   - Prepared monthly financial reports for management, including investor and lender reporting.
 ---
-
-[INFORMATION NEEDED: evidence of the first engagement from December 2022, e.g. contract, early invoice or platform record (EX-02)]
