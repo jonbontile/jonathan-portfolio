@@ -64,11 +64,11 @@ const displayName = p ? `${p.name}${p.credential ? `, ${p.credential}` : ''}` : 
         <Image
           src={headshot}
           alt="Jonathan Bontile in a blue shirt and tie"
-          widths={[352, 416, 600]}
-          sizes="(min-width: 64rem) 26rem, 22rem"
+          widths={[224, 288, 448, 576]}
+          sizes="(min-width: 64rem) 18rem, 14rem"
           loading="eager"
           fetchpriority="high"
-          class="aspect-[4/5] w-full rounded-lg border border-navy-200/25 object-cover object-top"
+          class="mx-auto size-56 rounded-full object-cover object-top ring-4 ring-accent ring-offset-4 ring-offset-navy-900 lg:size-72"
         />
         <div class="mt-5 flex items-center" aria-hidden="true">
           <span class="h-[3px] w-10 shrink-0 rounded-full bg-accent"></span>

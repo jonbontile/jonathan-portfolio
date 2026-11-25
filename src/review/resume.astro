@@ -3,12 +3,17 @@
  * Print layout for the resume PDF (US Letter). Preview-only: `npm run resume:pdf`
  * prints this page to public/downloads/. Built only from approved content, so the
  * PDF never says more than the site does.
+ *
+ * ATS-friendly by design: one column, real text (no images, icons or tables),
+ * standard section headings, contact details in the body (not a page header),
+ * one date format, and plain bullets. Recent roles listed in resume.json get
+ * bullets; every other approved role is one line under Additional experience.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Placeholder from '../components/ui/Placeholder.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { sortExperience, byOrder } from '../lib/content';
-import { engagementLabel, formatYearMonth, qualificationDates } from '../lib/labels';
+import { formatYearMonth, qualificationDates } from '../lib/labels';
 import resume from '../data/resume.json';
 
 const approved = <T extends { data: { status: string } }>(list: T[]) => list.filter((e) => e.data.status === 'approved');
@@ -18,213 +23,190 @@ const qualifications = byOrder(approved(await getCollection('qualifications')));
 const skills = byOrder(approved(await getCollection('skills')));
 const p = profile?.data;
 
+const detailed = experience.filter((e) => resume.detailed.includes(e.id));
+const additional = experience.filter((e) => !resume.detailed.includes(e.id));
 const period = (e: CollectionEntry<'experience'>) =>
   `${e.data.start ? formatYearMonth(e.data.start) : ''} – ${e.data.ongoing ? 'Present' : e.data.end ? formatYearMonth(e.data.end) : ''}`;
-const licenses = qualifications.filter((q) => q.data.kind === 'license');
-const certifications = qualifications.filter((q) => q.data.kind === 'certification' || q.data.kind === 'training');
-const education = qualifications.filter((q) => q.data.kind === 'degree');
+const credentials = qualifications.filter((q) => q.data.kind !== 'degree');
+// Most recent first, as ATS and recruiters expect.
+const education = qualifications
+  .filter((q) => q.data.kind === 'degree')
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+const line = (q: CollectionEntry<'qualifications'>) =>
+  [q.data.issuer, qualificationDates(q.data)].filter(Boolean).join(', ');
 const linkedinLabel = resume.linkedin.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
 ---
 
 <BaseLayout title="Resume" description="Resume of Jonathan Bontile, CPA (Philippines).">
   <article class="resume">
-    <header>
-      <h1>{p?.name}{p?.credential && <span class="cred">, {p.credential}</span>}</h1>
-      <p class="headline">{p?.headline}</p>
-      <ul class="contact" role="list">
-        <li>{p?.location}</li>
-        <li>{resume.email ? <a href={`mailto:${resume.email}`}>{resume.email}</a> : <Placeholder need="resume email" />}</li>
-        <li>{resume.phone ? resume.phone : <Placeholder need="resume phone" />}</li>
-        <li><a href={resume.linkedin}>{linkedinLabel}</a></li>
-      </ul>
-    </header>
-
-    <section>
-      <h2>Profile</h2>
-      <p>{profile?.body?.trim()}</p>
-    </section>
-
-    <section>
-      <h2>Experience</h2>
+    <h1>{p?.name}, {p?.credential}</h1>
+    <p class="headline">{p?.headline}</p>
+    <p class="contact">
+      {p?.location} | {resume.email ? <a href={`mailto:${resume.email}`}>{resume.email}</a> : <Placeholder need="resume email" />}
       {
-        experience.map((e) => (
-          <div class="job">
-            <div class="row">
-              <h3>
-                {e.data.title}, <span class="org">{e.data.organization}</span>
-              </h3>
-              <p class="dates">{period(e)}</p>
-            </div>
-            <p class="meta">
-              {e.data.engagementType && engagementLabel[e.data.engagementType]}
-              {e.data.location && ` · ${e.data.location}`}
-            </p>
-            {e.data.responsibilities.length ? (
-              <ul class="bullets">
-                {e.data.responsibilities.map((r) => (
-                  <li>{r}</li>
-                ))}
-              </ul>
-            ) : (
-              <p class="summary">{e.data.summary}</p>
-            )}
-          </div>
-        ))
+        resume.phones.length ? (
+          resume.phones.map((ph) => (
+            <>
+              {' | '}
+              {ph.number} ({ph.label})
+            </>
+          ))
+        ) : (
+          <>
+            {' | '}
+            <Placeholder need="resume phone" />
+          </>
+        )
       }
-    </section>
+      {' | '}<a href={resume.linkedin}>{linkedinLabel}</a>
+    </p>
 
-    <section class="two">
-      <div>
-        <h2>License</h2>
-        {
-          licenses.map((q) => (
-            <p class="item">
-              <strong>{q.data.name}</strong>, {q.data.issuer}
-              {qualificationDates(q.data) && `, ${qualificationDates(q.data)}`}
-            </p>
-          ))
-        }
-        <h2>Education</h2>
-        {
-          education.map((q) => (
-            <p class="item">
-              <strong>{q.data.name}</strong>, {q.data.issuer}
-              {qualificationDates(q.data) && `, ${qualificationDates(q.data)}`}
-            </p>
-          ))
-        }
-      </div>
-      <div>
-        <h2>Certifications</h2>
-        {
-          certifications.map((q) => (
-            <p class="item">
-              <strong>{q.data.name}</strong>, {q.data.issuer}
-              {qualificationDates(q.data) && `, ${qualificationDates(q.data)}`}
-            </p>
-          ))
-        }
-      </div>
-    </section>
+    <h2>Summary</h2>
+    <p>{profile?.body?.trim()}</p>
 
-    <section>
-      <h2>Skills</h2>
-      {
-        skills.map((g) => (
-          <p class="item">
-            <strong>{g.data.category}:</strong> {g.data.items.map((i) => i.name).join(', ')}
+    <h2>Skills</h2>
+    {
+      skills.map((g) => (
+        <p class="item">
+          <strong>{g.data.category}:</strong> {g.data.items.map((i) => i.name).join(', ')}
+        </p>
+      ))
+    }
+
+    <h2>Professional experience</h2>
+    {
+      detailed.map((e) => (
+        <section class="job">
+          <h3>{e.data.title}</h3>
+          <p class="org">
+            {e.data.organization}
+            {e.data.location && ` | ${e.data.location}`} | {period(e)}
           </p>
+          {e.data.responsibilities.length ? (
+            <ul>
+              {e.data.responsibilities.map((r) => (
+                <li>{r}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>{e.data.summary}</p>
+          )}
+        </section>
+      ))
+    }
+
+    {
+      additional.length > 0 && (
+        <>
+          <h2>Additional experience</h2>
+          <ul class="compact">
+            {additional.map((e) => (
+              <li>
+                <strong>{e.data.title}</strong>, {e.data.organization}
+                {e.data.location && `, ${e.data.location}`} | {period(e)}
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    <h2>License and certifications</h2>
+    <ul class="compact">
+      {
+        credentials.map((q) => (
+          <li>
+            <strong>{q.data.name}</strong>, {line(q)}
+          </li>
         ))
       }
-    </section>
+    </ul>
+
+    <h2>Education</h2>
+    <ul class="compact">
+      {
+        education.map((q) => (
+          <li>
+            <strong>{q.data.name}</strong>, {line(q)}
+          </li>
+        ))
+      }
+    </ul>
   </article>
 </BaseLayout>
 
 <style>
   @page {
     size: Letter;
-    margin: 0.55in 0.6in;
+    margin: 0.55in 0.65in;
   }
   .resume {
     max-width: 8.5in;
     margin: 0 auto;
-    padding: 0.5in 0.6in;
+    padding: 0.5in 0.65in;
     font-size: 10pt;
-    line-height: 1.4;
-    color: var(--color-ink);
+    line-height: 1.38;
+    color: #000;
   }
   @media print {
     .resume {
       padding: 0;
     }
   }
-  header {
-    border-bottom: 3px solid var(--color-accent);
-    padding-bottom: 0.12in;
+  /* Body font and normal tracking everywhere: the display font's tight
+     tracking makes PDF text extraction drop spaces ("JonathanBontile"). */
+  .resume :global(h1),
+  .resume :global(h2),
+  .resume :global(h3) {
+    font-family: var(--font-sans);
+    letter-spacing: normal;
   }
   h1 {
-    font-size: 22pt;
-    line-height: 1.1;
+    font-size: 20pt;
+    line-height: 1.15;
     color: var(--color-navy-900);
-  }
-  .cred {
-    font-weight: 600;
   }
   .headline {
-    margin-top: 0.04in;
-    font-family: var(--font-display);
-    font-size: 12pt;
+    font-size: 11.5pt;
     font-weight: 600;
-    color: var(--color-navy-900);
   }
   .contact {
-    margin-top: 0.08in;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 0.18in;
-    font-size: 9pt;
-    color: var(--color-muted);
+    margin-top: 0.06in;
+    padding-bottom: 0.1in;
+    border-bottom: 2px solid var(--color-accent);
+    font-size: 9.5pt;
   }
-  .contact a,
-  .item a {
-    color: var(--color-link);
-  }
-  section {
-    margin-top: 0.16in;
+  a {
+    color: inherit;
+    text-decoration: none;
   }
   h2 {
+    margin: 0.17in 0 0.05in;
     font-size: 10.5pt;
-    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-accent-text);
-    margin: 0.14in 0 0.05in;
-  }
-  section > h2:first-child,
-  .two > div > h2:first-child {
-    margin-top: 0;
-  }
-  .muted,
-  .meta {
-    color: var(--color-muted);
-  }
-  .job {
-    margin-top: 0.1in;
-    break-inside: avoid;
-  }
-  .row {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.2in;
-    align-items: baseline;
+    color: var(--color-navy-900);
+    border-bottom: 1px solid var(--color-line);
+    padding-bottom: 0.02in;
   }
   h3 {
     font-size: 10.5pt;
-    color: var(--color-navy-900);
+  }
+  .job {
+    margin-top: 0.09in;
+    break-inside: avoid;
   }
   .org {
-    font-weight: 500;
+    font-size: 9.5pt;
   }
-  .dates {
-    white-space: nowrap;
-    font-size: 9pt;
-    font-variant-numeric: tabular-nums;
-    color: var(--color-muted);
-  }
-  .meta {
-    font-size: 9pt;
-  }
-  .bullets {
+  ul {
     margin-top: 0.03in;
-    padding-left: 0.18in;
+    padding-left: 0.2in;
     list-style: disc;
   }
-  .item {
-    margin-top: 0.04in;
+  li + li {
+    margin-top: 0.02in;
   }
-  .two {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.3in;
-    break-inside: avoid;
+  .item {
+    margin-top: 0.03in;
   }
 </style>
