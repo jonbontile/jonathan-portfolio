@@ -49,6 +49,11 @@ const profile = defineCollection({
     summary: z.string(),
     location: z.string().optional(),
     languages: z.array(z.string()).default([]),
+    availability: z.string().optional(),
+    /** Short facts for the homepage overview table. */
+    focus: z.string().optional(),
+    experience: z.string().optional(),
+    worksWith: z.string().optional(),
     resumePdf: z.string().optional(),
     portfolioPdf: z.string().optional(),
   }),

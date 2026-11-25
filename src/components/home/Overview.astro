@@ -26,9 +26,9 @@ const facts: { label: string; value?: string; need: string }[] = [
     value: business ? `${business.data.title}, ${business.data.organization}` : undefined,
     need: 'registered business name and role',
   },
-  { label: 'Focus', need: 'areas of focus' },
-  { label: 'Experience', need: 'years of experience (only if documented)' },
-  { label: 'Works with', need: 'regions and time zones served' },
+  { label: 'Focus', value: profile?.data.focus, need: 'areas of focus' },
+  { label: 'Experience', value: profile?.data.experience, need: 'years of experience (only if documented)' },
+  { label: 'Works with', value: profile?.data.worksWith, need: 'regions and time zones served' },
 ];
 ---
 
