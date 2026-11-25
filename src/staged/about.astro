@@ -28,16 +28,14 @@ const skills = byOrder(await getPublished('skills'));
         <div class="mt-6 text-lg">
           {profile ? <EntryBody entry={profile} /> : <Placeholder need="professional background" />}
         </div>
-        <p class="mt-6">
-          <Placeholder need="career story: how Jonathan came to accounting and to founding Bontile Bookkeeping Services" />
-        </p>
+        <p class="mt-6"><a href="/experience/">See my full experience</a></p>
       </div>
       <aside aria-label="At a glance" class="self-start rounded-lg border border-line bg-paper p-6 sm:p-8">
         <h2 class="text-h4">At a glance</h2>
         <dl class="mt-5 space-y-4 text-small">
           <div>
             <dt class="font-semibold text-navy-900">Based in</dt>
-            <dd class="mt-1"><Placeholder need="location / time zone (ID-05)" /></dd>
+            <dd class="mt-1">{profile?.data.location ?? <Placeholder need="location (ID-05)" />}</dd>
           </div>
           <div>
             <dt class="font-semibold text-navy-900">Languages</dt>
@@ -47,7 +45,7 @@ const skills = byOrder(await getPublished('skills'));
           </div>
           <div>
             <dt class="font-semibold text-navy-900">Availability</dt>
-            <dd class="mt-1"><Placeholder need="availability (OT-03)" /></dd>
+            <dd class="mt-1">{profile?.data.availability ?? <Placeholder need="availability (OT-03)" />}</dd>
           </div>
         </dl>
       </aside>
