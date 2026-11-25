@@ -2,7 +2,7 @@
 status: approved
 claimIds: [EX-06]
 title: Senior Tax Accountant
-organization: Araneta City, Inc.
+organization: Araneta Center, Inc.
 engagementType: employment
 start: "2014-10"
 end: "2016-06"

@@ -6,7 +6,7 @@ organization: A Philippine business process outsourcing company
 engagementType: freelance
 start: "2012-03"
 end: "2012-09"
-location: Quezon City, Philippines
+location: Ortigas, Pasig City, Philippines
 summary: Accounting consulting.
 responsibilities: []
 ---

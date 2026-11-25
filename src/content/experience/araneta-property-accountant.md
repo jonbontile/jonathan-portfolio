@@ -2,7 +2,7 @@
 status: approved
 claimIds: [EX-07]
 title: Property Accountant
-organization: Araneta City, Inc.
+organization: Araneta Center, Inc.
 engagementType: employment
 start: "2013-10"
 end: "2014-10"
