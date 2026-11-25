@@ -1,11 +1,12 @@
 ---
-status: draft
+status: approved
 claimIds: [EX-01, ID-03]
 title: Founder
 organization: Bontile Bookkeeping Services
 engagementType: business-ownership
-summary: "[INFORMATION NEEDED: one-line summary of the business and Jonathan's role]"
+start: "2025-09"
+ongoing: true
+location: Philippines
+summary: Bookkeeping practice registered with the Philippine Department of Trade and Industry (DTI) in September 2025.
 responsibilities: []
 ---
-
-[INFORMATION NEEDED: start date, registered business name/styling (ID-03) and responsibilities]
