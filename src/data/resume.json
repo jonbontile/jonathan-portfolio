@@ -1,0 +1,6 @@
+{
+  "$comment": "Contact lines for the resume PDF only (owner decision 2026-11-25: public email, phone and LinkedIn; no home address). Empty values show as placeholders and block the PDF.",
+  "email": "",
+  "phone": "",
+  "linkedin": "https://www.linkedin.com/in/jonathan-bontile-cpa/"
+}

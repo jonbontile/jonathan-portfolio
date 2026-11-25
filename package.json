@@ -15,7 +15,8 @@
     "check": "astro check && tsc -p worker/tsconfig.json",
     "deploy": "astro build && wrangler deploy",
     "cf-typegen": "wrangler types worker/worker-configuration.d.ts",
-    "test:a11y": "playwright test"
+    "test:a11y": "playwright test",
+    "resume:pdf": "node scripts/resume-pdf.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.6",

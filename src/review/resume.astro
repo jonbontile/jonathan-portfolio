@@ -1,0 +1,230 @@
+---
+/**
+ * Print layout for the resume PDF (US Letter). Preview-only: `npm run resume:pdf`
+ * prints this page to public/downloads/. Built only from approved content, so the
+ * PDF never says more than the site does.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Placeholder from '../components/ui/Placeholder.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { sortExperience, byOrder } from '../lib/content';
+import { engagementLabel, formatYearMonth, qualificationDates } from '../lib/labels';
+import resume from '../data/resume.json';
+
+const approved = <T extends { data: { status: string } }>(list: T[]) => list.filter((e) => e.data.status === 'approved');
+const [profile] = approved(await getCollection('profile'));
+const experience = sortExperience(approved(await getCollection('experience')));
+const qualifications = byOrder(approved(await getCollection('qualifications')));
+const skills = byOrder(approved(await getCollection('skills')));
+const p = profile?.data;
+
+const period = (e: CollectionEntry<'experience'>) =>
+  `${e.data.start ? formatYearMonth(e.data.start) : ''} – ${e.data.ongoing ? 'Present' : e.data.end ? formatYearMonth(e.data.end) : ''}`;
+const licenses = qualifications.filter((q) => q.data.kind === 'license');
+const certifications = qualifications.filter((q) => q.data.kind === 'certification' || q.data.kind === 'training');
+const education = qualifications.filter((q) => q.data.kind === 'degree');
+const linkedinLabel = resume.linkedin.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
+---
+
+<BaseLayout title="Resume" description="Resume of Jonathan Bontile, CPA (Philippines).">
+  <article class="resume">
+    <header>
+      <h1>{p?.name}{p?.credential && <span class="cred">, {p.credential}</span>}</h1>
+      <p class="headline">{p?.headline}</p>
+      <ul class="contact" role="list">
+        <li>{p?.location}</li>
+        <li>{resume.email ? <a href={`mailto:${resume.email}`}>{resume.email}</a> : <Placeholder need="resume email" />}</li>
+        <li>{resume.phone ? resume.phone : <Placeholder need="resume phone" />}</li>
+        <li><a href={resume.linkedin}>{linkedinLabel}</a></li>
+      </ul>
+    </header>
+
+    <section>
+      <h2>Profile</h2>
+      <p>{profile?.body?.trim()}</p>
+    </section>
+
+    <section>
+      <h2>Experience</h2>
+      {
+        experience.map((e) => (
+          <div class="job">
+            <div class="row">
+              <h3>
+                {e.data.title}, <span class="org">{e.data.organization}</span>
+              </h3>
+              <p class="dates">{period(e)}</p>
+            </div>
+            <p class="meta">
+              {e.data.engagementType && engagementLabel[e.data.engagementType]}
+              {e.data.location && ` · ${e.data.location}`}
+            </p>
+            {e.data.responsibilities.length ? (
+              <ul class="bullets">
+                {e.data.responsibilities.map((r) => (
+                  <li>{r}</li>
+                ))}
+              </ul>
+            ) : (
+              <p class="summary">{e.data.summary}</p>
+            )}
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="two">
+      <div>
+        <h2>License</h2>
+        {
+          licenses.map((q) => (
+            <p class="item">
+              <strong>{q.data.name}</strong>, {q.data.issuer}
+              {qualificationDates(q.data) && `, ${qualificationDates(q.data)}`}
+            </p>
+          ))
+        }
+        <h2>Education</h2>
+        {
+          education.map((q) => (
+            <p class="item">
+              <strong>{q.data.name}</strong>, {q.data.issuer}
+              {qualificationDates(q.data) && `, ${qualificationDates(q.data)}`}
+            </p>
+          ))
+        }
+      </div>
+      <div>
+        <h2>Certifications</h2>
+        {
+          certifications.map((q) => (
+            <p class="item">
+              <strong>{q.data.name}</strong>, {q.data.issuer}
+              {qualificationDates(q.data) && `, ${qualificationDates(q.data)}`}
+            </p>
+          ))
+        }
+      </div>
+    </section>
+
+    <section>
+      <h2>Skills</h2>
+      {
+        skills.map((g) => (
+          <p class="item">
+            <strong>{g.data.category}:</strong> {g.data.items.map((i) => i.name).join(', ')}
+          </p>
+        ))
+      }
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  @page {
+    size: Letter;
+    margin: 0.55in 0.6in;
+  }
+  .resume {
+    max-width: 8.5in;
+    margin: 0 auto;
+    padding: 0.5in 0.6in;
+    font-size: 10pt;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  @media print {
+    .resume {
+      padding: 0;
+    }
+  }
+  header {
+    border-bottom: 3px solid var(--color-accent);
+    padding-bottom: 0.12in;
+  }
+  h1 {
+    font-size: 22pt;
+    line-height: 1.1;
+    color: var(--color-navy-900);
+  }
+  .cred {
+    font-weight: 600;
+  }
+  .headline {
+    margin-top: 0.04in;
+    font-family: var(--font-display);
+    font-size: 12pt;
+    font-weight: 600;
+    color: var(--color-navy-900);
+  }
+  .contact {
+    margin-top: 0.08in;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.18in;
+    font-size: 9pt;
+    color: var(--color-muted);
+  }
+  .contact a,
+  .item a {
+    color: var(--color-link);
+  }
+  section {
+    margin-top: 0.16in;
+  }
+  h2 {
+    font-size: 10.5pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent-text);
+    margin: 0.14in 0 0.05in;
+  }
+  section > h2:first-child,
+  .two > div > h2:first-child {
+    margin-top: 0;
+  }
+  .muted,
+  .meta {
+    color: var(--color-muted);
+  }
+  .job {
+    margin-top: 0.1in;
+    break-inside: avoid;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.2in;
+    align-items: baseline;
+  }
+  h3 {
+    font-size: 10.5pt;
+    color: var(--color-navy-900);
+  }
+  .org {
+    font-weight: 500;
+  }
+  .dates {
+    white-space: nowrap;
+    font-size: 9pt;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-muted);
+  }
+  .meta {
+    font-size: 9pt;
+  }
+  .bullets {
+    margin-top: 0.03in;
+    padding-left: 0.18in;
+    list-style: disc;
+  }
+  .item {
+    margin-top: 0.04in;
+  }
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3in;
+    break-inside: avoid;
+  }
+</style>
