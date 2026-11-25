@@ -1,0 +1,26 @@
+{
+  "$comment": "The 'Beyond the Numbers' method (homepage and About). Approved claims: PS-01 theme, PS-02 four stages, PS-04 stage descriptions, PS-07 statement, PS-08 'In practice' examples. Every example traces to approved services or work history; no client names or outcome claims.",
+  "statement": "Clean books are the start; understanding them is the point.",
+  "stages": [
+    {
+      "name": "Understand",
+      "description": "Learn the business, its processes and its records before touching the numbers.",
+      "practice": "Before taking over a client's books, I review how they sell, get paid and spend, then fit the chart of accounts to how the business actually works."
+    },
+    {
+      "name": "Reconcile",
+      "description": "Make the records agree with bank statements, invoices and other source evidence.",
+      "practice": "Every month, bank, card and loan accounts are reconciled to statements. For online sellers, marketplace payouts are split into sales, fees, refunds and reserves."
+    },
+    {
+      "name": "Analyze",
+      "description": "Turn accurate records into a clear view of performance, costs and cash.",
+      "practice": "Monthly reports include month-over-month variance notes and budget vs. actual, so owners see what moved and why."
+    },
+    {
+      "name": "Improve",
+      "description": "Recommend and help put in place better processes and controls.",
+      "practice": "I rebuilt the books of a Dubai subsidiary and set up its accounting system. For clients today, bill approval workflows mean nothing is paid until the owner approves it."
+    }
+  ]
+}
