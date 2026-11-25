@@ -24,7 +24,8 @@ interface Swatch {
 const brand: Swatch[] = [
   { name: 'navy-900', hex: '#0B1F3A', use: 'Headings, navy surfaces, footer', contrast: 'White on it 16.52:1', dark: true },
   { name: 'navy-800', hex: '#142C4F', use: 'Hover on navy surfaces', contrast: 'White on it 14.2:1', dark: true },
-  { name: 'navy-700', hex: '#1E4E8C', use: 'Links', contrast: '8.32:1 on white', dark: true },
+  { name: 'navy-700', hex: '#1E4E8C', use: 'Secondary navy', contrast: '8.32:1 on white', dark: true },
+  { name: 'brand-blue', hex: '#0222CE', use: 'Links (brand)', contrast: '9.89:1 on white', dark: true },
   { name: 'navy-200', hex: '#C9D4E4', use: 'Secondary text on navy', contrast: '11.03:1 on navy-900' },
   { name: 'navy-100', hex: '#E8EEF6', use: 'Badges, quiet tints', contrast: 'Navy text on it 14.15:1' },
 ];
@@ -67,24 +68,23 @@ const stages = [
 
   <Section>
     <div role="note" class="rounded-lg border-2 border-accent-text bg-[#fff1e6] p-6 sm:p-8">
-      <h2 class="text-h3">The orange is a placeholder</h2>
+      <h2 class="text-h3">Brand orange</h2>
       <p class="mt-3 max-w-(--container-prose)">
-        The official Bontile orange hasn't been confirmed. The swatches below use <code class="font-semibold">#FF4400</code>,
-        sampled from the Bontile logo, as the only sourced candidate. Once you supply the official value, it replaces this
-        token everywhere, and every accent pairing is rechecked.
+        <code class="font-semibold">#FF3900</code> was supplied by the owner on 25 November 2026. The darker shade is
+        derived from it for orange text, because the brand orange is too light for small text on white.
       </p>
       <div class="mt-6 grid gap-4 sm:grid-cols-2">
         <div class="flex items-center gap-4">
           <span class="size-14 shrink-0 rounded-md bg-accent" aria-hidden="true"></span>
           <div class="text-small">
-            <p class="font-semibold text-navy-900">accent-unconfirmed · #FF4400</p>
-            <p class="text-muted">Buttons, focus ring, ledger tick. 3.45:1 on white (non-text only)</p>
+            <p class="font-semibold text-navy-900">brand-orange · #FF3900</p>
+            <p class="text-muted">Buttons, focus ring, ledger tick. 3.60:1 on white (non-text only)</p>
           </div>
         </div>
         <div class="flex items-center gap-4">
           <span class="size-14 shrink-0 rounded-md bg-accent-text" aria-hidden="true"></span>
           <div class="text-small">
-            <p class="font-semibold text-navy-900">accent-unconfirmed-strong · #C73500</p>
+            <p class="font-semibold text-navy-900">brand-orange-strong · #C73500 (derived)</p>
             <p class="text-muted">Orange text on light surfaces. 5.33:1 on white</p>
           </div>
         </div>

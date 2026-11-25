@@ -1,0 +1,10 @@
+{
+  "$comment": "Resume PDF only (owner decisions 2026-11-25): email, two phone numbers and LinkedIn; no home address. `detailed` lists the experience entries shown with bullets; every other approved entry is one line under Additional experience. Empty values show as placeholders and block the PDF.",
+  "email": "jonathan@bontilebiz.com",
+  "phones": [
+    { "number": "+63 927 339 0993", "label": "PH" },
+    { "number": "+1 (208) 994-3726", "label": "US" }
+  ],
+  "linkedin": "https://www.linkedin.com/in/jonathan-bontile-cpa/",
+  "detailed": ["bontile-bookkeeping-services", "freelance-bookkeeper", "yasui-and-co", "yasui-asia"]
+}

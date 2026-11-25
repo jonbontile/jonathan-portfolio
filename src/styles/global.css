@@ -5,19 +5,19 @@
 /*
  * Design tokens. Proposal for approval gate 3 (2026-11-23).
  *
- * ACCENT IS UNCONFIRMED. The official Bontile orange is pending
- * (PROJECT_DOCUMENTATION_RECONCILIATION.md, C2). `accent-unconfirmed` holds the
- * only sourced candidate, #FF4400, sampled from the Bontile logo. It is not the
- * official brand value. Every accent pairing must be rechecked when it is confirmed.
+ * Brand colors supplied by the owner, 2026-11-25: orange #FF3900, blue #0222CE.
+ * `brand-orange-strong` (#C73500) is a darker shade derived for orange text on
+ * light surfaces; it is not a brand value.
  *
- * Contrast (WCAG 2.x), checked 2026-11-23:
+ * Contrast (WCAG 2.x), checked 2026-11-25:
  *   ink on white 14.23, on paper 13.26        muted on white 7.17, on paper 6.68
- *   link on white 8.32, on paper 7.75         white on navy-900 16.52
+ *   link (brand blue) on white 9.89, paper 9.22  white on navy-900 16.52
  *   navy-200 on navy-900 11.03                border-strong on white 3.64, on paper 3.39
- *   accent on white 3.45 (UI/focus only)      accent on navy-900 4.78
- *   navy-900 on accent 4.78 (button text)     accent-strong on white 5.33, on paper 4.97
+ *   accent on white 3.60 (UI/focus only)      accent on navy-900 4.59
+ *   navy-900 on accent 4.59 (button text)     accent-strong on white 5.33, on paper 4.97
  *   success 6.47, warning 6.33, error 6.54 on white
- *   White text on accent is 3.45, which FAILS for normal text. Never use it.
+ *   White text on accent is 3.60, which FAILS for normal text. Never use it.
+ *   Brand blue on navy-900 is 1.67: never use it on navy surfaces.
  */
 
 /* Metric-matched fallback so the swap from Arial to Inter barely shifts layout. */
@@ -53,19 +53,20 @@
   --color-border-strong: #7a879c;
 
   /* Accent: UNCONFIRMED placeholder (see header) */
-  --color-accent-unconfirmed: #ff4400;
-  --color-accent-unconfirmed-strong: #c73500;
+  --color-brand-orange: #ff3900;
+  --color-brand-orange-strong: #c73500;
+  --color-brand-blue: #0222ce;
 
   /* Semantic */
   --color-text: var(--color-ink);
   --color-text-muted: var(--color-muted);
-  --color-link: var(--color-navy-700);
+  --color-link: var(--color-brand-blue);
   --color-surface: var(--color-white);
   --color-surface-alt: var(--color-paper);
   --color-surface-inverse: var(--color-navy-900);
-  --color-accent: var(--color-accent-unconfirmed);
-  --color-accent-text: var(--color-accent-unconfirmed-strong);
-  --color-focus: var(--color-accent-unconfirmed);
+  --color-accent: var(--color-brand-orange);
+  --color-accent-text: var(--color-brand-orange-strong);
+  --color-focus: var(--color-brand-orange);
   --color-success: #1e6b45;
   --color-warning: #8a5300;
   --color-error: #b3261e;

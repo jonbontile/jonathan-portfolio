@@ -47,6 +47,7 @@ const previewPages = {
         injectRoute({ pattern: '/design-system', entrypoint: './src/review/design-system.astro' });
         injectRoute({ pattern: '/content-status', entrypoint: './src/review/content-status.astro' });
         injectRoute({ pattern: '/prototype', entrypoint: './src/review/homepage-prototype.astro' });
+        injectRoute({ pattern: '/resume-print', entrypoint: './src/review/resume.astro' });
         for (const route of stagedRoutes()) injectRoute(route);
       }
     },

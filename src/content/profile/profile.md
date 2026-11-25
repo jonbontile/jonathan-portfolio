@@ -13,6 +13,7 @@ availability: Open to new bookkeeping clients and remote finance roles
 focus: Bookkeeping, financial reporting and financial modeling
 experience: More than a decade
 worksWith: US-based small businesses, remotely
+resumePdf: /downloads/jonathan-bontile-resume.pdf
 ---
 
 Accountant and bookkeeper with more than a decade of experience across the Philippines, Thailand, Japan and the United States. Since 2022 I've supported US clients remotely, now through my own practice, Bontile Bookkeeping Services. My work goes beyond the numbers: I reconcile what's there, explain what moved, and give owners records they can decide with.
