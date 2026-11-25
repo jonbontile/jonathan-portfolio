@@ -20,9 +20,14 @@ const audienceLabel = { clients: 'For clients', employers: 'For employers', both
 <SiteLayout title="Services" description="Bookkeeping, accounting and financial reporting services.">
   <PageHeader
     title="Services"
-    intro="What each service includes, what it doesn't, and who it suits."
+    intro="What each service includes, what it doesn't, and who it suits. Work is done remotely in QuickBooks Online, Xero or Zoho Books."
     draft={services.some(isDraft)}
-  />
+  >
+    <p class="mt-4 max-w-(--container-prose) text-small text-muted">
+      Bontile Bookkeeping Services is not a licensed CPA firm in the United States and does not provide audit, attest, legal
+      or US income tax return services.
+    </p>
+  </PageHeader>
 
   {
     services.length === 0 ? (
