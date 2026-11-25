@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [EX-03]
 title: Assistant Language Teacher
 organization: Heart Corporation
@@ -12,5 +12,3 @@ responsibilities:
   - Created culturally appropriate teaching materials.
   - Supported school events and extracurricular activities.
 ---
-
-[INFORMATION NEEDED: certificate of employment (EX-03)]

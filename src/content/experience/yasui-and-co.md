@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [EX-04]
 title: Accountant, International Operations
 organization: Yasui & Co.
@@ -13,6 +13,3 @@ responsibilities:
   - Reconciled intercompany records between Japan headquarters and overseas subsidiaries.
   - Supported headquarters with KYC verification, accounts receivable, monthly sales reporting and coordination with overseas subsidiaries.
 ---
-
-
-[INFORMATION NEEDED: certificate of employment (EX-04)]

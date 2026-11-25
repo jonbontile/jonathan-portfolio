@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [EX-05]
 title: Coordinator and Logistics Officer
 organization: Yasui Asia Ltd.
@@ -12,6 +12,3 @@ responsibilities:
   - Reconstructed the accounting books of the Dubai subsidiary and implemented an accounting system.
   - Introduced stock-taking procedures and inventory records.
 ---
-
-
-[INFORMATION NEEDED: certificate of employment (EX-05)]
