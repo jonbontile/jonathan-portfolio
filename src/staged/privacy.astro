@@ -1,81 +1,107 @@
 ---
 /**
- * Privacy notice: DRAFT, from SECURITY_AND_PRIVACY.md section 10.
- * Needs owner input (retention, privacy contact, email provider confirmation)
- * and an appropriate legal review before publication.
+ * Privacy notice. Owner decisions (2026-11-25): inquiry emails kept 24
+ * months; privacy contact privacy@bontilebiz.com; reviewed by the owner
+ * (no external legal review). Facts checked against worker/contact.ts,
+ * wrangler.jsonc and docs/decisions/EMAIL_CONFIGURATION.md.
  * Staged page (preview-only).
  */
 import SiteLayout from '../layouts/SiteLayout.astro';
 import PageHeader from '../components/common/PageHeader.astro';
 import Section from '../components/ui/Section.astro';
-import Placeholder from '../components/ui/Placeholder.astro';
+
+const privacyEmail = 'privacy@bontilebiz.com';
 ---
 
-<SiteLayout title="Privacy notice" description="How information sent through this site is used.">
+<SiteLayout title="Privacy notice" description="How information sent through this site is collected, used and kept.">
   <PageHeader title="Privacy notice" draft>
-    <p class="mt-5 max-w-(--container-prose) text-muted">
-      Last updated: <Placeholder need="publication date" />
-    </p>
-    <p class="mt-3 max-w-(--container-prose) text-small text-muted">
-      Draft for review. This notice needs legal review before publication.
-    </p>
+    <p class="mt-5 max-w-(--container-prose) text-muted">Last updated: 25 November 2026</p>
   </PageHeader>
 
   <Section tone="white">
     <div class="privacy max-w-(--container-prose)">
       <h2>Who is responsible</h2>
       <p>
-        Jonathan Bontile is responsible for information sent through this website. For privacy questions, contact
-        <Placeholder need="privacy contact address" />.
+        Jonathan Bontile, CPA, of Bontile Bookkeeping Services in the Philippines, is responsible for information sent
+        through this website. For privacy questions or requests, write to <a href={`mailto:${privacyEmail}`}>{privacyEmail}</a>.
       </p>
 
       <h2>What is collected</h2>
-      <p>When you use the contact form: your name, email address, inquiry type and message, plus your company and subject if you add them.</p>
       <p>
-        Page visits are counted with Cloudflare Web Analytics, which produces aggregated statistics and does not use cookies or
-        track you across sites.
+        <strong>When you use the contact form:</strong> your name, email address, inquiry type and message, plus your company
+        and subject if you add them.
+      </p>
+      <p>
+        <strong>When you send the form:</strong> your IP address is used to limit repeated submissions and is passed to
+        Cloudflare Turnstile for the spam check. This site doesn't store it.
+      </p>
+      <p>
+        <strong>When you visit:</strong> page visits are counted with Cloudflare Web Analytics, which gives aggregated
+        statistics without cookies and without tracking you across sites.
       </p>
 
       <h2>Why it is used</h2>
-      <p>Your details are used only to reply to your inquiry. They are never sold or used for marketing.</p>
-      <p><Placeholder need="lawful basis wording, confirmed for the applicable laws" /></p>
+      <p>
+        Your details are used only to reply to your inquiry and, if you go ahead, to discuss the work or role. They are never
+        sold, shared for marketing or added to a mailing list.
+      </p>
+      <p>
+        They are processed because you asked for a reply, which is a step taken at your request before any engagement, and
+        because replying to inquiries is a legitimate interest of the business. This applies under the Philippine Data Privacy
+        Act of 2012 and, for visitors in the EU or UK, under the GDPR.
+      </p>
 
       <h2>Who processes it</h2>
       <ul>
-        <li>Cloudflare: hosting, security, spam protection (Turnstile) and visit statistics.</li>
         <li>
-          Email delivery provider: <Placeholder need="provider confirmed at gate 7 (proposed: Resend, data stored in the United States, logs kept 30 days)" />
+          <strong>Cloudflare:</strong> hosting, security, the spam check (Turnstile) and visit statistics. Cloudflare keeps
+          short-lived technical logs of form requests, without the message content.
         </li>
-        <li>Google Workspace: the inbox where inquiries are received.</li>
+        <li>
+          <strong>Resend:</strong> delivers the form's emails. It keeps message content and delivery logs for 30 days.
+        </li>
+        <li><strong>Google Workspace:</strong> the inbox where inquiries are received and kept.</li>
       </ul>
 
       <h2>International transfers</h2>
-      <p>These providers may process your information outside your country, including in the United States.</p>
+      <p>
+        These providers may process your information outside your country, including in the United States and Japan. Each
+        provides contractual safeguards for international transfers.
+      </p>
 
       <h2>How long it is kept</h2>
       <p>
-        Inquiry emails are kept for <Placeholder need="retention period, e.g. 24 months" /> and then deleted. The website itself
-        doesn't store form submissions.
+        Inquiry emails are kept for 24 months after the last message in the conversation and then deleted. If the inquiry
+        leads to work, the records needed for that engagement are kept as long as the engagement and the law require. The
+        website itself doesn't store form submissions.
       </p>
 
       <h2>Cookies</h2>
       <p>
-        This site sets no tracking cookies. The spam check on the contact form may use strictly necessary signals to tell people
-        from automated programs.
+        This site sets no tracking or advertising cookies. The spam check on the contact form may use strictly necessary
+        signals to tell people from automated programs.
       </p>
 
       <h2>Your rights</h2>
       <p>
-        You can ask to access, correct or delete the information you sent, or object to how it's used, by writing to the
-        privacy contact above. You can also complain to the National Privacy Commission of the Philippines or to the data
-        protection authority where you live.
+        You can ask to be informed about, access, correct, delete or block the information you sent, receive a copy of it, or
+        object to how it's used. Write to <a href={`mailto:${privacyEmail}`}>{privacyEmail}</a>; you'll get a reply within 30
+        days. You can also complain to the National Privacy Commission of the Philippines or to the data protection authority
+        where you live.
       </p>
 
       <h2>Security</h2>
-      <p>Information is sent over encrypted connections, and access to inquiries is restricted.</p>
+      <p>
+        Information is sent over encrypted connections, access to the inbox is restricted,
+        and the site doesn't keep a copy of your message. If a breach affects your information, you'll be told as the law
+        requires.
+      </p>
+
+      <h2>Children</h2>
+      <p>This site is for businesses and employers and isn't intended for children.</p>
 
       <h2>Changes</h2>
-      <p>If this notice changes, the date at the top will change too.</p>
+      <p>If this notice changes, the date at the top changes too.</p>
     </div>
   </Section>
 </SiteLayout>
