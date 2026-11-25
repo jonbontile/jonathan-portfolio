@@ -101,6 +101,10 @@ const qualifications = defineCollection({
     kind: z.enum(['license', 'certification', 'degree', 'training']),
     issuer: z.string(),
     year: z.number().int().min(1950).max(2100).optional(),
+    /** Still being earned; `year` is then the expected completion year. */
+    inProgress: z.boolean().default(false),
+    /** Last month the credential is valid, for credentials that expire. */
+    expires: yearMonth.optional(),
     showCredentialId: z.boolean().default(false),
     verifyUrl: z.url().optional(),
     order: z.number().int().default(100),

@@ -22,3 +22,18 @@ export const inquiryTypes = [
   { value: 'recruitment', label: 'Recruitment inquiry' },
   { value: 'other', label: 'Other professional inquiry' },
 ] as const;
+
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** "2027-07" -> "Jul 2027"; "2027" -> "2027". */
+export function formatYearMonth(value: string): string {
+  const [year, month] = value.split('-');
+  return month ? `${months[Number(month) - 1]} ${year}` : year;
+}
+
+/** The date line for a qualification card, e.g. "2026 · Valid until Jul 2027" or "In progress, expected 2029". */
+export function qualificationDates(q: { year?: number; inProgress: boolean; expires?: string }): string | undefined {
+  if (q.inProgress) return q.year ? `In progress, expected ${q.year}` : 'In progress';
+  const parts = [q.year?.toString(), q.expires && `Valid until ${formatYearMonth(q.expires)}`].filter(Boolean);
+  return parts.length ? parts.join(' · ') : undefined;
+}

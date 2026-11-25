@@ -13,7 +13,7 @@ import Fact from '../components/ui/Fact.astro';
 import Placeholder from '../components/ui/Placeholder.astro';
 import EntryBody from '../components/ui/EntryBody.astro';
 import { getPublished, isDraft, byOrder } from '../lib/content';
-import { qualificationKindLabel } from '../lib/labels';
+import { qualificationKindLabel, qualificationDates } from '../lib/labels';
 
 const all = byOrder(await getPublished('qualifications'));
 const kinds = ['license', 'certification', 'degree', 'training'] as const;
@@ -53,7 +53,7 @@ const missing: Record<(typeof kinds)[number], string> = {
                 <p class="mt-2 text-small text-muted">
                   <Fact value={q.data.issuer} />
                 </p>
-                {q.data.year && <p class="tabular mt-1 text-small text-muted">{q.data.year}</p>}
+                {qualificationDates(q.data) && <p class="tabular mt-1 text-small text-muted">{qualificationDates(q.data)}</p>}
                 {q.data.verifyUrl && (
                   <p class="mt-3 text-small">
                     <a href={q.data.verifyUrl} rel="noopener">

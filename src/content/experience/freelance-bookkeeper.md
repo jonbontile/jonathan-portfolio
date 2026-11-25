@@ -7,7 +7,7 @@ engagementType: freelance
 start: "2022-12"
 end: "2025-08"
 location: Remote
-summary: Remote bookkeeping for US-based small businesses.
+summary: Remote bookkeeping for US-based small businesses in education, technology, food manufacturing, consumer products and private investment.
 responsibilities:
   - Maintained general ledgers and recorded day-to-day transactions.
   - Performed monthly bank reconciliations and resolved discrepancies before month-end close.
