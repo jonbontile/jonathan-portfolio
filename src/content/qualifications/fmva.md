@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [CR-02]
 name: Financial Modeling & Valuation Analyst (FMVA)
 kind: certification

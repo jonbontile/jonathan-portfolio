@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [EX-11]
 title: Shipping and Marketing Staff
 organization: PMAC Business Operations, Inc.

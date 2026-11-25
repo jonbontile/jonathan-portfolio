@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [SK-01]
 category: Accounting and reporting
 items:

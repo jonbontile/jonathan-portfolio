@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [CR-09]
 name: Gusto Payroll Certification
 kind: certification

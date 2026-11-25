@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [CR-05]
 name: Google Data Analytics Professional Certificate
 kind: certification

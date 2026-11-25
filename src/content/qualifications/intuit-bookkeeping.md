@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [CR-06]
 name: Intuit Bookkeeping Certification
 kind: certification

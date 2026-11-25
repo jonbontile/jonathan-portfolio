@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [CR-10]
 name: Japanese-Language Proficiency Test (N4)
 kind: certification

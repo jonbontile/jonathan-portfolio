@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [CR-08]
 name: Intuit QuickBooks Certification Level 2
 kind: certification

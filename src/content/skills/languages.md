@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [SK-03]
 category: Languages
 items:

@@ -17,7 +17,10 @@ import { qualificationKindLabel, qualificationDates } from '../lib/labels';
 
 const all = byOrder(await getPublished('qualifications'));
 const kinds = ['license', 'certification', 'degree', 'training'] as const;
-const groups = kinds.map((k) => ({ kind: k, items: all.filter((q) => q.data.kind === k) }));
+// Training is optional: its section is left out when there are no entries.
+const groups = kinds
+  .map((k) => ({ kind: k, items: all.filter((q) => q.data.kind === k) }))
+  .filter((g) => g.items.length > 0 || g.kind !== 'training');
 const missing: Record<(typeof kinds)[number], string> = {
   license: 'professional license details (CR-01)',
   certification: 'certifications (CR-02 onward), only if verified and current',

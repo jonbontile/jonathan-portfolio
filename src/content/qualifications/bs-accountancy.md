@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [ED-01]
 name: Bachelor of Science in Accountancy
 kind: degree

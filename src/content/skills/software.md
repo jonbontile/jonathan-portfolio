@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [SK-02]
 category: Software
 items:

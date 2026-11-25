@@ -1,5 +1,5 @@
 ---
-status: draft
+status: approved
 claimIds: [ED-02]
 name: Master of Business Administration
 kind: degree
